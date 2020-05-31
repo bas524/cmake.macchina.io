@@ -1,0 +1,130 @@
+<div class="groupbox">
+  <h1>{{bundle.name}}</h1>
+  <div ng-if="enableBundleUpgrade" ng-controller="UpgradeCtrl">
+    <div ng-file-drop ng-file-select ng-model="files" class="drop-box"
+         drag-over-class="dragover" ng-multiple="false" allow-dir="false"
+         ng-accept="'.bndl'">
+      Drop bundle (.bndl) file or click to upload and upgrade.
+    </div>
+    <div ng-no-file-drop>File drag/drop is not supported for this browser.</div>
+    <div ng-if="status != ''">
+      <img src="/macchina/bundles/images/loading.gif" style="vertical-align: middle" alt="">
+      {{status}}
+    </div>
+  </div>
+
+  <table class="list">
+	<tbody>
+	  <tr class="even">
+		<th>ID</th><td>{{bundle.id}}</td>
+	  </tr>
+	  <tr class="odd">
+		<th>Symbolic Name</th><td>{{bundle.symbolicName}}</td>
+	  </tr>
+	  <tr class="even">
+		<th>Version</th><td>{{bundle.version}}</td>
+	  </tr>
+	  <tr class="odd">
+		<th>State</th><td>{{bundle.state}}</td>
+	  </tr>
+	  <tr class="even">
+		<th>Vendor</th><td>{{bundle.vendor}}</td>
+	  </tr>
+	  <tr class="odd">
+		<th>Copyright</th><td>{{bundle.copyright}}</td>
+	  </tr>
+	  <tr class="even">
+		<th>Run Level</th><td>{{bundle.runlevel}}</td>
+	  </tr>
+	  <tr class="odd">
+		<th>Sealed</th><td>{{bundle.sealed}}</td>
+	  </tr>
+	  <tr class="even">
+		<th>Lazy Start</th><td>{{bundle.lazyStart}}</td>
+	  </tr>
+	  <tr class="odd">
+		<th>Prevent Uninstall</th><td>{{bundle.preventUninstall}}</td>
+	  </tr>
+	  <tr class="even">
+		<th>Path</th><td>{{bundle.path}}</td>
+	  </tr>
+	</tbody>
+  </table>
+  <div style="margin-top: 32px;" ng-show="bundle.requires.length > 0 || bundle.requiredBy.length > 0">
+    <h2>Bundle Dependencies</h2>
+    <table class="list">
+      <thead>
+        <tr>
+          <th>Bundle</th>
+          <th>Version</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="intermediateHeader" ng-show="bundle.requires.length > 0">
+          <th colspan="2">Requires</th>
+        </tr>
+        <tr ng-repeat="dep in bundle.requires" ng-class-even="'even'" ng-class-odd="'odd'">
+          <td><a href="#/bundles/{{dep.symbolicName}}">{{dep.symbolicName}}</a></td>
+          <td>{{dep.versions}}</td>
+        </tr>
+        <tr class="intermediateHeader" ng-show="bundle.requiredBy.length > 0">
+          <th colspan="2">Required By</th>
+        </tr>
+        <tr ng-repeat="dep in bundle.requiredBy" ng-class-even="'even'" ng-class-odd="'odd'">
+          <td><a href="#/bundles/{{dep.symbolicName}}">{{dep.symbolicName}}</a></td>
+          <td>{{dep.versions}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top: 32px;" ng-show="bundle.modules.provides.length > 0 || bundle.modules.requires.length > 0">
+    <h2>Module Dependencies</h2>
+    <table class="list">
+      <thead>
+        <tr>
+          <th>Module</th>
+          <th>Version</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="intermediateHeader" ng-show="bundle.modules.provides.length > 0">
+          <th colspan="2">Provides</th>
+        </tr>
+        <tr ng-repeat="dep in bundle.modules.provides" ng-class-even="'even'" ng-class-odd="'odd'">
+          <td>{{dep.symbolicName}}</td>
+          <td>{{dep.version}}</td>
+        </tr>
+        <tr class="intermediateHeader" ng-show="bundle.modules.requires.length > 0">
+          <th colspan="2">Requires</th>
+        </tr>
+        <tr ng-repeat="dep in bundle.modules.requires" ng-class-even="'even'" ng-class-odd="'odd'">
+          <td>{{dep.symbolicName}}</td>
+          <td>{{dep.versions}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div id="modalBackground" class="modalBackground"></div>
+<div id="confirmStop" class="popupWindow">
+  <h1>Stop {{bundle.symbolicName}}?</h1>
+  <div>
+    <p>The following bundles depend upon this bundle:</p>
+    <ul>
+      <li ng-repeat="dep in bundle.requiredBy">{{dep.symbolicName}}</li>
+    </ul>
+    <p>Click <b>Stop Only This</b> to stop only this bundle.
+    Bundles depending upon this bundle may no longer function properly.
+    Click <b>Stop All</b> to stop this bundle and all depending bundles.</p>
+  </div>
+  <div>
+    <div style="text-align: right">
+	  <a href="" ng-click="cancelStop()">Cancel</a>
+	  &nbsp;
+	  <button type="button" ng-click="confirmStop()">Stop Only This</button>
+	  &nbsp;
+	  <button type="button" ng-click="confirmStopAll()">Stop All</button>
+	</div>
+  </div>
+</div>
+

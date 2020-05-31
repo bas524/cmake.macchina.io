@@ -1,0 +1,18 @@
+<bundlespec>
+	<manifest>
+    	<name>macchina.io Modbus Core Libraries</name>
+		<symbolicName>io.macchina.modbus.core</symbolicName>
+		<version>1.0.0</version>
+		<vendor>Applied Informatics</vendor>
+		<copyright>(c) 2015-2020, Applied Informatics Software Engineering GmbH</copyright>
+		<lazyStart>false</lazyStart>
+		<runLevel>610</runLevel>
+	</manifest>
+	<code>
+    	../../lib/${osName}/${osArch}/libIoTModbus*.1.dylib,
+    	../../lib/${osName}/${osArch}/libIoTModbus*.so.1
+	</code>
+	<files>
+		bundle/*
+	</files>
+</bundlespec>

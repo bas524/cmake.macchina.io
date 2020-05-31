@@ -1,0 +1,22 @@
+<div class="groupbox">
+  <table class="list" style="width: 100%">
+	<thead>
+	  <tr>
+		<th ng-click="setOrderBy('id')" class="list-sortable">ID</th>
+		<th ng-click="setOrderBy('name')" class="list-sortable">Name</th>
+		<th ng-click="setOrderBy('version')" class="list-sortable">Version</th>
+		<th ng-click="setOrderBy('symbolicName')" class="list-sortable">Symbolic Name</th>
+		<th ng-click="setOrderBy('state')" class="list-sortable">State</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr ng-repeat="bundle in bundles | orderBy:orderBy track by $index" ng-class-even="'even'" ng-class-odd="'odd'">
+		<td>{{bundle.id}}</td>
+		<td><a href="#/bundles/{{bundle.symbolicName}}">{{bundle.name}}</a></td>
+		<td>{{bundle.version}}</td>
+		<td>{{bundle.symbolicName}}</td>
+		<td>{{bundle.state}}</td>
+	  </tr>
+	</tbody>  
+  </table>
+</div>

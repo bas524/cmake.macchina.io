@@ -1,0 +1,22 @@
+#
+# Makefile
+#
+# Makefile for macchina.io MQTT Library
+#
+
+include $(POCO_BASE)/build/rules/global
+
+objects = \
+	MQTTClient \
+	IMQTTClient \
+	MQTTClientEventDispatcher \
+	MQTTClientRemoteObject \
+	MQTTClientServerHelper \
+	MQTTClientSkeleton
+
+target          = IoTMQTT
+target_version  = 1
+target_includes = $(PROJECT_BASE)/protocols/MQTT/Paho/include
+target_libs     = PocoRemotingNG PocoOSP PocoUtil PocoXML PocoJSON PocoFoundation
+
+include $(POCO_BASE)/build/rules/lib

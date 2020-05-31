@@ -1,0 +1,8 @@
+<extensions>
+  <extension point="osp.web.server.requesthandler" path="/" class="IoT::Web::Launcher::ControllerRequestHandlerFactory" library="io.macchina.webui.launcher" allowSpecialization="all" hidden="true"/>
+  <extension point="osp.web.server.requesthandler" path="/macchina/login" class="IoT::Web::Launcher::LoginPageFactory" library="io.macchina.webui.launcher" allowSpecialization="none" hidden="true"/>
+  <extension point="osp.web.server.requesthandler" path="/macchina/session.json" class="IoT::Web::Launcher::SessionJSONFactory" library="io.macchina.webui.launcher" allowSpecialization="none" hidden="true"/>
+
+  <extension point="osp.web.server.directory" path="/macchina/launcher" resource="webapp" allowSpecialization="owner" hidden="true"/>
+  <extension point="osp.web.server.requesthandler" path="/macchina/launcher/apps.json" class="IoT::Web::Launcher::LauncherAppsJSONFactory" library="io.macchina.webui.launcher" allowSpecialization="owner" hidden="true"/>
+</extensions>

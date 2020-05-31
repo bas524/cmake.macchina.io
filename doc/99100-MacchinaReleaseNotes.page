@@ -1,0 +1,87 @@
+Release Notes
+AAAAMacchinaIO
+
+!!!Release 0.6.0 - Developer Preview 6
+
+!!Summary of Changes
+
+  - upgraded POCO to release 1.7.6
+  - make JS/Core, JS/Net, JS/Data and JS/Bridge build on Windows (including VS project files)
+  - allow specifying a script memory limit through the osp.js.memoryLimit bundle property (also for JavaScript Servlets and Server Pages)
+  - fixed memory usage issues in JavaScript
+  - improved script stopping behavior (fix a race condition introduced in 0.5.0)
+  - OSP: added BundleContext::listBundles() and BundleLoader::listBundles() overloads accepting a BundleFilter; BundleRepository: add installBundle() overloads that take a bundle repository path.
+  - various minor fixes
+
+
+!!!Release 0.5.0 - Developer Preview 5
+
+!!Summary of Changes
+
+  - fixed a memory usage issue with Session wrapper in JavaScript servlet engine
+  - handle potentially empty V8 handles returned by *::New()
+  - upgrade bundled Paho to 1.1.0
+  - fixed a bug in RemoteGen: generated serializers and deserializers for classes/structs using more than one level of inheritance would only serialize members of direct base class.
+  - various minor fixes
+
+
+!!!Release 0.4.0 - Developer Preview 4
+
+!!Summary of Changes
+
+  - Script Scheduler improvements (@once) and documentation.
+  - Added POCO Redis library to platform
+  - Moved serial port library to platform
+
+
+!!!Release 0.3.0 - Developer Preview 3
+
+!!Summary of Changes
+
+  - Updated bundled POCO libraries to 1.7.5
+  - Added NetworkEnvironmentService
+  - Remoting improvements
+
+
+!!!Release 0.2.0 - Developer Preview 2
+
+!!Summary of Changes
+
+  - upgraded POCO C++ Libraries to 1.7.4
+  - upgraded V8 to release 3.28.4
+  - added BarcodeReader interface
+  - GNSSSensor implementation based on NMEA 0183 protocol via serial port
+  - GNSSSensor interface - added positionLost event
+  - added WebTunnel protocol support for connecting to my-devices.net
+  - Serial Port: added support for baud rates 460800 to 4000000 if available
+  - enable V8 snapshot feature to improve JavaScript startup time
+  - added LED device interface and implementation for Linux /sys/class/leds
+  - various improvements, bugfixes and optimizations in JS library
+  - added support for XBee protocol and XBee Sensor (light, temperature, humidity)
+  - added Sensor::ready() method
+  - added SimulatedGNSSSensor which plays back GPX files
+  - added web-based Console
+  - improved JavaScript logger wrapper (support for formatted messages)
+  - added JavaScript console object
+  - JavaScript: HTMLForm JavaScript wrapper now has property accessor for fields: 
+    write form.a instead of form.getField('a') (GH #16)
+  - various minor bugfixes and improvements
+  - fixed a potential crash when converting a std::string to JavaScript string
+    and the string contains invalid UTF-8.
+  - added support for Modbus protocol
+  - added support for Bluetooth LE devices
+  - added DeviceStatus service
+  - added JavaScript task scheduler
+  - performance improvements
+
+
+!!!Release 0.1.0 - Developer Preview 1
+
+This is the first release of macchina.io, released with the intent to get
+early feedback from the IoT developer community. 
+
+macchina.io is still in development. The core platform code is done and
+considered stable (it's based on code having seen heavy production use
+for a few years already). Work leading to 1.0 release focuses on adding 
+additional sensor, device and cloud service interfaces, as well as improving 
+the existing interfaces.

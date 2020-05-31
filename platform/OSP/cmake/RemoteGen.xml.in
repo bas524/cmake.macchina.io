@@ -1,0 +1,25 @@
+<AppConfig>
+	<RemoteGen>
+		<files>
+			<include>
+				${_headers_list}
+			</include>
+			<include-paths>
+				${_include_paths}
+			</include-paths>
+		</files>
+		<output>
+			<namespace>${_out_namespace}</namespace>
+			<include>${_out_include_path}</include>
+			<src>${_out_src_path}</src>
+			<copyright>${_out_copyright}</copyright>
+			<mode>${_out_mode}</mode>
+			<osp>
+				<enable>${_out_osp_enable}</enable>
+			</osp>
+			<timestamps>${_out_timestamps_enable}</timestamps>
+			<includeRoot>${_out_include_root_path}</includeRoot>
+			<flatIncludes>${_out_flat_include_enable}</flatIncludes>
+		</output>
+	</RemoteGen>
+</AppConfig>

@@ -1,0 +1,15 @@
+#
+# Makefile-Library
+#
+# Makefile for Poco OSP WebEvent Library
+#
+
+include $(POCO_BASE)/build/rules/global
+
+objects = WebEventService 
+
+target         = PocoOSPWebEvent
+target_version = 2
+target_libs    = PocoOSPWeb PocoOSP PocoNet PocoUtil PocoXML PocoFoundation
+
+include $(POCO_BASE)/build/rules/lib

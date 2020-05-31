@@ -1,0 +1,17 @@
+#
+# Makefile
+#
+# Makefile for macchina.io Devices bundle
+#
+
+include $(POCO_BASE)/build/rules/global
+include $(POCO_BASE)/OSP/BundleCreator/BundleCreator.make
+
+objects = BundleActivator
+
+target      = io.macchina.devices
+target_libs = IoTDevices PocoOSP PocoRemotingNG PocoUtil PocoXML PocoFoundation
+
+postbuild = $(SET_LD_LIBRARY_PATH) $(BUNDLE_TOOL) -n$(OSNAME) -a$(OSARCH) -o../bundles Devices.bndlspec
+
+include $(POCO_BASE)/build/rules/dylib

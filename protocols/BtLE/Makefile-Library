@@ -1,0 +1,30 @@
+#
+# Makefile
+#
+# Makefile for macchina.io Bluetooth LE Library
+#
+
+include $(POCO_BASE)/build/rules/global
+
+objects = \
+	GATTClient \
+	GATTPeripheral \
+	IPeripheral \
+	IPeripheralBrowser \
+	Peripheral \
+	PeripheralBrowser \
+	PeripheralBrowserEventDispatcher \
+	PeripheralBrowserRemoteObject \
+	PeripheralBrowserServerHelper \
+	PeripheralBrowserSkeleton \
+	PeripheralEventDispatcher \
+	PeripheralFactory \
+	PeripheralRemoteObject \
+	PeripheralServerHelper \
+	PeripheralSkeleton
+
+target         = IoTBtLE
+target_version = 1
+target_libs    = PocoRemotingNG PocoOSP PocoUtil PocoXML PocoJSON PocoFoundation
+
+include $(POCO_BASE)/build/rules/lib

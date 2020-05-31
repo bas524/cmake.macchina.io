@@ -1,0 +1,26 @@
+<bundlespec>
+	<manifest>
+    	<name>macchina.io WebTunnel Agent</name>
+		<symbolicName>io.macchina.protocols.webtunnel</symbolicName>
+		<version>2.0.0</version>
+		<vendor>Applied Informatics</vendor>
+		<copyright>(c) 2015-2020, Applied Informatics Software Engineering GmbH</copyright>
+		<activator>
+			<class>IoT::WebTunnel::BundleActivator</class>
+			<library>io.macchina.protocols.webtunnel</library>
+		</activator>
+		<lazyStart>false</lazyStart>
+		<runLevel>610</runLevel>
+	</manifest>
+	<code>
+		bin/${osName}/${osArch}/*.so,
+		bin/${osName}/${osArch}/*.dylib,
+    	../../lib/${osName}/${osArch}/libIoTWebTunnel*.1.dylib,
+    	../../lib/${osName}/${osArch}/libIoTWebTunnel*.so.1
+    	../../platform/lib/${osName}/${osArch}/libPocoWebTunnel*.1.dylib,
+    	../../platform/lib/${osName}/${osArch}/libPocoWebTunnel*.so.1
+	</code>
+	<files>
+		bundle/*
+	</files>
+</bundlespec>

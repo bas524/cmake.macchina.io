@@ -1,0 +1,362 @@
+Remoting NG Release Notes
+Remoting NG
+
+!!!Release 2020.1
+
+!!Summary of Changes
+
+  - The RemotingNG framework now requires a C++14 compiler.
+  - Serialization support for C++11 and C++14 types:
+    std::array, std::unordered_set, std::unordered_multiset, std::shared_ptr, std::unique_ptr.
+  - Improved deserialization performance of complex types due to use of
+    move assignment.
+  - Modernized code base to use C++14 features.
+  - Performance improvements due to use of C++14 features such as std::string literals.
+  - Simplified the RemotingNG code generator configuration via the RemoteGen.xml
+    configuration file. Compiler configurations, and the list of RemotingNG header files
+    that need to be parsed by the code generator for each project are now in a global
+    configuration file and don't need to be specified for each project.
+
+!!Known Issues
+
+  - None at this time.
+
+!!Incompatible Changes and Possible Transition Issues
+
+  - The RemotingNG framework now requires a C++14 compiler
+    (Minimum compiler versions: Visual C++ 2015, GCC 5, Clang 3.4).
+
+
+!!!Release 2019.2
+
+!!Summary of Changes
+
+  - REST: It's now possible to use <[multipart/form-data]> encoding for passing
+    parameters to REST methods. This includes parameters of type
+    std::vector<char> being transmitted as binary data. This can be
+    enabled by setting the <[consumes]> attribute of the method
+    to "multipart/form-data".
+  - REST: It's now possible to pass query parameters to POST requests.
+  - TCP: Make connection handshake timeout configurable and increase
+    default handshake timeout to 8 seconds.
+
+!!Known Issues
+
+  - None at this time.
+
+!!Incompatible Changes and Possible Transition Issues
+
+  - None at this time.
+
+
+!!!Release 2019.1
+
+!!Summary of Changes
+
+  - The TCP transport can now also be used with Unix Domain Sockets (which are
+    not TCP at all). In a future release, the TCP transport will therefore be
+    renamed to Socket transport.
+  - XSDGen: added support for rpc/literal style WSDL
+  - XSDGen: added support for loading WSDL/XSD documents via HTTPS.
+    XSDGen must be compiled with -DPOCO_XSD_ENABLE_HTTPS to enable HTTPS support.
+
+!!Known Issues
+
+  - None at this time.
+
+!!Incompatible Changes and Possible Transition Issues
+
+  - None at this time.
+
+
+!!!Release 2018.1
+
+!!Summary of Changes
+
+  - Serialization now supports arrays (Poco::Array or std::array).
+  - CORS: Send Access-Control-Allow-Headers in preflight response
+    (REST and JSON-RPC transports).
+  - REST JSON: fixed serialization/deserialization of a single scalar in the message body
+  - REST: Support custom authorization headers (AUTH_CUSTOM).
+  - JSON deserialization: fix a potential crash if an object is expected, but an array
+    is present
+  - RemoteGen: fixed issues with code generation for events
+
+!!Known Issues
+
+  - None at this time.
+
+!!Incompatible Changes and Possible Transition Issues
+
+  - None at this time.
+
+
+!!!Release 2017.2
+
+!!Summary of Changes
+
+  - Added HTTP transport, combining HTTP(S) with binary serialization.
+  - SOAP Transport: added option flags to Poco::RemotingNG::SOAP::Serializer to control
+    various SOAP envelope and formatting options.
+    These can be set via the setSerializerOptions() method in Poco::RemotingNG::SOAP::Transport.
+  - Added new <*optional*> attribute, which has the inverse meaning of the <*mandatory*>
+    attribute.
+
+!!Known Issues
+
+  - None at this time.
+
+!!Incompatible Changes and Possible Transition Issues
+
+  - None at this time.
+
+
+!!!Release 2017.1
+
+!!Summary of Changes
+
+  - Added a new framework for authentication and authorization, which replaces the
+    transport-specific authentication support available in previous releases.
+  - Support for authentication and authorization in the TCP transport.
+  - REST Transport: added support for OAuth2 Bearer Token authentication
+  - REST and JSONRPC Transport: Control characters in strings are now properly
+    encoded in JSON strings.
+  - RemoteGen bugfix: fix: don't generate () for empty default initialization in
+    Skeleton code
+  - RemoteGen bugfix: generate correct code for EventDispatcher and EventSubscriber
+    for classes that inherit events from base classes
+
+!!Known Issues
+
+  - None at this time.
+
+!!Incompatible Changes and Possible Transition Issues
+
+  - None at this time.
+
+
+!!!Release 2016.2
+
+!!Summary of Changes
+
+  - RemoteGen bugfix: ignore static Poco::BasicEvent<> members in @remote classes.
+  - Use Poco::Clock instead of Poco::Timestamp for event subscription timeouts for
+    resiliency against system time changes.
+  - Poco::RemotingNG::Listener: add new defaultListener() overload allowing to specify a
+    Poco::RemotingNG::ConnectionManager.
+  - The generated ServerHelper classes have a new shutdown() method to explicitly
+    unregister the Skeleton with the ORB. Note that calling it is optional and most
+    servers don't have to do it. This is for use cases that require dynamic
+    registration and unregistration of Skeleton classes.
+    Furthermore, the ServerHelper destructor will no longer unregister the Skeleton.
+
+!!Known Issues
+
+  - None at this time.
+
+!!Incompatible Changes and Possible Transition Issues
+
+  - Due to changes in the ServerHelper interface, all ServerHelper files generated
+    by RemoteGen must be re-generated after upgrading to this release by running
+    RemoteGen.
+
+
+!!!Release 2016.1
+
+!!Summary of Changes
+
+  - New REST transport for implementing RESTful web services.
+  - JSONRPC: error message texts in JSON error documents are now properly escaped.
+  - SOAP: added support for document/literal-style web services (in addition to
+    document/literal wrapped; client only).
+  - Poco::RemotingNG::ORB has new objectRegistered and objectUnregistered events.
+  - Support for server-side event filtering.
+  - RemoteGen: properly generate #include's for event type serializers and deserializers.
+  - RemoteGen: fixed incorrect code generation for "header" attribute if a parameter
+    direction (in, out, inout) is specified.
+  - RemoteGen: generated Remoting Type IDs now include the namespace (period-separated).
+  - TCP: added Poco::RemotingNG::TCP::Listener::defaultListener() to obtain a shared
+    EventListener instance for handling remote events.
+  - XSDGen: improvements to WSDL/XML Schema parser and code generator to better handle
+    different styles of WSDL and XML Schema documents.
+
+!!Known Issues
+
+  - None at this time.
+
+!!Incompatible Changes and Possible Transition Issues
+
+  - Type IDs generated by RemoteGen now include the service class namespace. In previous
+    versions, the type ID was simply the service class name. Namespace parts are
+    separated by a period, e.g.: "Services.TimeService".
+
+
+!!!Release 2015.2
+
+!!Summary of Changes
+
+  - Support for void events (Poco::BasicEvent<void>) in RemoteGen
+  - RemoteGen.xml fixes (add -DPOCO_NO_GCC_API_ATTRIBUTE) for POCO 1.6
+  - XSDGen: added command-line option to force code generation for all bindings
+
+!!Known Issues
+
+  - None at this time.
+
+!!Incompatible Changes and Possible Transition Issues
+
+  - None at this time.
+
+
+!!!Release 2015.1
+
+!!Summary of Changes
+
+  - No changes since previous release.
+
+!!Known Issues
+
+  - None at this time.
+
+!!Incompatible Changes and Possible Transition Issues
+
+  - None at this time.
+
+
+!!!Release 2014.1B
+
+!!Summary of Changes
+
+  - Added support for cookies to JSONRPC and SOAP Transport objects.
+  - Make HTTPServerRequest and HTTPServerResponse objects available
+    to server code via Context in JSONRPC and SOAP transports.
+  - RemoteGen: SingletonHolder in client/server helper is now named sh<class> to avoid
+    name conflicts if multiple source files are combined.
+
+!!Known Issues
+
+  - None at this time.
+
+!!Incompatible Changes and Possible Transition Issues
+
+  - None at this time.
+
+
+!!!Release 2014.1
+
+!!Summary of Changes
+
+  - Minor changes for compatibility with C++11.
+  - TCP transport bugfix: Set up reply stream before closing request to avoid
+    race condition (no reply handler registered) with fast connections.
+  - RemoteGen: Do not use inheritance in generated skeleton classes.
+    This fixes a potential crash when invoking a base class method on a
+    derived class, due to a failing cross cast (the RemoteObject classes for
+    base class and derived classes are not related).
+  - New ServerHelper class template, which is specialized by generated ServerHelper
+    classes. This allows use of ServerHelper classes in generic code.
+  - ServerHelper and ClientHelper instances are now created using a Poco::SingletonHolder.
+  - Various minor improvements.
+
+!!Known Issues
+
+  - None at this time.
+
+!!Incompatible Changes and Possible Transition Issues
+
+  - None at this time.
+
+
+!!!Release 2013.2
+
+!!Summary of Changes
+
+  - Added the Poco::RemotingNG::Context class which allows to pass transport-specific
+    information to service methods via a thread-local object.
+  - Added the JSON-RPC transport which implements the
+    [[http://www.jsonrpc.org/specification JSON-RPC 2.0]] protocol
+  - XSDGen bugfixes: empty import elements now work, unnamed inner simple type declarations
+    are handled properly and no longer cause an assertion, missing element declarations
+    no longer cause a crash due to a null pointer.
+
+!!Known Issues
+
+  - None at this time.
+
+!!Incompatible Changes and Possible Transition Issues
+
+  - None at this time.
+
+
+!!!Release 2013.1p1
+
+!!Summary of Changes
+
+  - The SOAP transport now correctly handles SOAP faults sent in MTOM multipart messages.
+  - The TypeDeserializer for Poco::DateTime now also parses the time zone, if present,
+    and adjusts the resulting DateTime value accordingly.
+  - Fixed a RemoteGen bug where the @header attribute was ignored in case of a renamed
+    method parameter.
+  - Fixed a XSDGen bug where header elements would be duplicated in generated C++ classes
+    if both SOAP 1.1 and 1.2 bindings were present in a WSDL document.
+
+!!Known Issues
+
+  - None at this time.
+
+!!Incompatible Changes and Possible Transition Issues
+
+  - None at this time.
+
+
+!!!Release 2013.1
+
+!!Summary of Changes
+
+  - The Content-Type HTTP header for a MTOM multipart request had compatibility issues
+    with some third party implementations. This is now fixed.
+  - Fixed a crasher with serializing MTOM messages if a Serializer instance was used
+    multiple times.
+  - Fixed a few XSD/WSDL code generation issues, causing incorrect code to be generated
+    for certain XSD/WSDL constructs.
+
+!!Known Issues
+
+  - None at this time.
+
+!!Incompatible Changes and Possible Transition Issues
+
+  - None at this time.
+
+
+!!!Release 2012.1
+
+!!Summary of Changes
+
+  - Remoting NG is the successor to the Remoting framework.
+  - This is the first official release of Remoting NG. While
+    Remoting NG was included starting with release 2011.1 as
+    part of the Universal Plug and Play framework, with release
+    2012.1, Remoting NG completely replaces the older Remoting
+    framework, which will no longer be improved.
+  - Remoting NG features an improved internal architecture, support
+    for remote events, and new transports. Also included is
+    code generation from WSDL documents.
+
+!!Known Issues
+
+  - None at this time.
+
+!!Incompatible Changes and Possible Transition Issues
+
+  - The transition from Remoting to Remoting NG requires some
+    changes to existing code.
+  - The generated client helper classes now only have a <*find()*>
+    method taking a URI as argument.
+  - The programming interfaces for registering listeners and
+    service objects with the server ORB have changed. The generated
+    server helper classes have a different interface as well.
+  - The attribute syntax for method parameters has changed.
+  - Please refer to the documentation for more information.
+
+

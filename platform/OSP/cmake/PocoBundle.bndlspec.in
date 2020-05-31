@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<bundlespec>
+  <manifest>
+    <name>${_bundle_description}</name>
+    <symbolicName>${_bundle_simbolic_name}</symbolicName>
+    <version>${_bundle_version}</version>
+    <vendor>${_bundle_vendor}</vendor>
+    <copyright>${_bundle_copyright}</copyright>
+    ${_bundle_activator}
+    <lazyStart>${_bundle_lazy_start}</lazyStart>
+    <runLevel>${_bundle_run_level}</runLevel>
+    ${_bundle_dependencies}
+  </manifest>
+  <code>
+    ${_bundle_binary_files}
+  </code>
+  <files>
+    ${_bundle_files}
+  </files>
+</bundlespec>
