@@ -1,7 +1,7 @@
 set(PROJECT_BUNDLE io.macchina.can.socketcan)
 set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_LIST_DIR}/SocketCAN.bndlspec)
 
-if (CMAKE_SYSTEM_NAME STREQUAL Linux)
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
   add_definitions(-DMACCHINA_HAVE_SOCKETCAN)
 endif ()
 
