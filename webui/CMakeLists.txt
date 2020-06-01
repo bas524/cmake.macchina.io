@@ -1,0 +1,4 @@
+add_subdirectory(Playground)
+add_subdirectory(Settings)
+add_subdirectory(BundleAdmin)
+add_subdirectory(Console)

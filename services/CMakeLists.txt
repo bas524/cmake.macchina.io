@@ -1,2 +1,5 @@
 add_subdirectory(DeviceStatus)
 add_subdirectory(MobileConnection)
+add_subdirectory(NetworkEnvironment)
+add_subdirectory(UnitsOfMeasure)
+add_subdirectory(WebEvent)

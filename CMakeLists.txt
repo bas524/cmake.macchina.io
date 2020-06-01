@@ -42,4 +42,8 @@ if(TARGET Bundle::Creator)
     add_subdirectory(services)
   endif()
 
+  if(EXISTS ${CMAKE_CURRENT_LIST_DIR}/webui)
+    add_subdirectory(webui)
+  endif()
+
 endif()

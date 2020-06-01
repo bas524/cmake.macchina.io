@@ -7,7 +7,7 @@ function(POCO_MAKE_BUNDLE)
           PARSED_ARGS # prefix of output variables
           "" # list of names of the boolean arguments (only defined ones will be true)
           "NAME;BUNDLESPEC;BUNDLES_DIR" # list of names of mono-valued arguments
-          "SOURCES;HEADERS;INCLUDES;DEPENDENCIES" # list of names of multi-valued arguments (output variables are lists)
+          "SOURCES;HEADERS;INCLUDES;DEPENDENCIES;BUNDLE_CREATOR_EXT_ATTRS" # list of names of multi-valued arguments (output variables are lists)
           ${ARGN} # arguments of the function to parse, here we take the all original ones
   )
   # note: if it remains unparsed arguments, here, they can be found in variable PARSED_ARGS_UNPARSED_ARGUMENTS
@@ -67,7 +67,7 @@ function(POCO_MAKE_BUNDLE)
   endif()
 
   add_custom_target(${PARSED_ARGS_NAME}.bundle
-                     COMMAND $<TARGET_FILE:BundleCreator> -n${CMAKE_SYSTEM_NAME} -a${CMAKE_SYSTEM_PROCESSOR} -o${PARSED_ARGS_BUNDLES_DIR} ${PARSED_ARGS_BUNDLESPEC}
+                     COMMAND $<TARGET_FILE:BundleCreator> -n${CMAKE_SYSTEM_NAME} -a${CMAKE_SYSTEM_PROCESSOR} ${PARSED_ARGS_BUNDLE_CREATOR_EXT_ATTRS} -o${PARSED_ARGS_BUNDLES_DIR} ${PARSED_ARGS_BUNDLESPEC}
                      WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
                      COMMENT "Make bundle ${out} into ${PARSED_ARGS_BUNDLES_DIR}"
                      DEPENDS ${MAKE_BUNDLE_DEPENDENCIES}
@@ -116,12 +116,15 @@ function(POCO_MAKE_BUNDLE_LIBRARY)
         #TODO : for not server mode source list should be extend
         set(HAS_REMOTE "")
         file(STRINGS ${HDR} HAS_REMOTE REGEX "\\/\\/\\s*@\\s* remote\\s*")
+        file(STRINGS ${HDR} HAS_BASIC_EVENT REGEX "Poco\\:\\:BasicEvent\\<.*\\>\\s*")
         if (HAS_REMOTE)
           list(APPEND GENERATED_SOURCES ${PARSED_ARGS_REMGEN_SRC_PATH}/I${HDR_NAME}.cpp)
-          list(APPEND GENERATED_SOURCES ${PARSED_ARGS_REMGEN_SRC_PATH}/${HDR_NAME}EventDispatcher.cpp)
           list(APPEND GENERATED_SOURCES ${PARSED_ARGS_REMGEN_SRC_PATH}/${HDR_NAME}RemoteObject.cpp)
           list(APPEND GENERATED_SOURCES ${PARSED_ARGS_REMGEN_SRC_PATH}/${HDR_NAME}ServerHelper.cpp)
           list(APPEND GENERATED_SOURCES ${PARSED_ARGS_REMGEN_SRC_PATH}/${HDR_NAME}Skeleton.cpp)
+          if (HAS_BASIC_EVENT)
+            list(APPEND GENERATED_SOURCES ${PARSED_ARGS_REMGEN_SRC_PATH}/${HDR_NAME}EventDispatcher.cpp)
+          endif()
         endif()
       endforeach()
     endif()
