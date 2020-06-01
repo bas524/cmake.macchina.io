@@ -69,7 +69,6 @@ Thumbs.db
 # VS generated files #
 ######################
 *.obj
-*.exe
 *.pdb
 *.user
 *.aps
@@ -124,3 +123,5 @@ platform/JS/V8/out/
 ########
 server/data/
 
+/.idea/
+/cmake-build-debug/
