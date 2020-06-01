@@ -21,7 +21,15 @@ POCO_MAKE_BUNDLE_LIBRARY(
         HEADERS ${HDRS}
         INCLUDES ${CMAKE_CURRENT_LIST_DIR}/include
         VERSION 1
-        DEPENDENCIES Poco::OSPIoTDevices Poco::OSPIoTCAN Poco::RemotingNG Poco::OSP Poco::Util Poco::XML Poco::Serial Poco::Foundation
+        DEPENDENCIES
+          Poco::OSPIoTDevices
+          Poco::OSPIoTCAN
+          Poco::RemotingNG
+          Poco::OSP
+          Poco::Util
+          Poco::XML
+          Poco::Serial
+          Poco::Foundation
         OUTPUT_NAME IoTCANDevices
 )
 
@@ -33,12 +41,13 @@ POCO_GENERATE_BUNDLESPEC(
         COPYRIGHT "(c) 2007-2020, Applied Informatics Software Engineering GmbH"
         #LAZY_START
         RUN_LEVEL 000
-        CODES IoTCANDevices
+        CODES IoTCANDevices:HAS_VERSION
         OUT_BUNDLESPEC ${PROJECT_BUNDLE_SPEC}
 )
 
 POCO_MAKE_BUNDLE(NAME ${PROJECT_BUNDLE}
                  BUNDLESPEC ${PROJECT_BUNDLE_SPEC}
                  BUNDLES_DIR ${BUNDLES_OUTPUT_DIR}
+                 DEPENDENCIES Poco::OSPIoTCANDevices
                  )
 
