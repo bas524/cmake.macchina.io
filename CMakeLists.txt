@@ -38,4 +38,8 @@ if(TARGET Bundle::Creator)
     add_subdirectory(devices)
   endif()
 
+  if(EXISTS ${CMAKE_CURRENT_LIST_DIR}/services)
+    add_subdirectory(services)
+  endif()
+
 endif()
