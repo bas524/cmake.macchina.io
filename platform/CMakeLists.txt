@@ -177,7 +177,10 @@ option(ENABLE_PAGECOMPILER "Enable PageCompiler" ON)
 option(ENABLE_PAGECOMPILER_FILE2PAGE "Enable File2Page" ON)
 
 option(ENABLE_REMOTING "Enable remoting" ON)
+
 option(ENABLE_JS "Enable javascript engine" ON)
+
+option(ENABLE_GEO "Enable geo-ip wrapper" ON)
 
 option(ENABLE_SERIAL "Enable serial port wrapper" ON)
 
@@ -213,6 +216,7 @@ set(Poco_COMPONENTS "")
 if(REMGEN_ENABLE_OSP)
 	set(ENABLE_JS ON CACHE BOOL "Enable javascript engine" FORCE)
 	set(ENABLE_ZIP ON CACHE BOOL "Enable Zip" FORCE)
+	set(ENABLE_GEO ON CACHE BOOL "Enable geo-ip wrapper" FORCE)
 endif()
 
 if(ENABLE_TESTS)
@@ -448,6 +452,11 @@ endif()
 if(EXISTS ${PROJECT_SOURCE_DIR}/JS AND ENABLE_JS)
 	add_subdirectory(JS)
 	list(APPEND Poco_COMPONENTS "JS")
+endif()
+
+if(EXISTS ${PROJECT_SOURCE_DIR}/Geo AND ENABLE_GEO)
+	add_subdirectory(Geo)
+	list(APPEND Poco_COMPONENTS "Geo")
 endif()
 
 if(EXISTS ${PROJECT_SOURCE_DIR}/Serial AND ENABLE_SERIAL)

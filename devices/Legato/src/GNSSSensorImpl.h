@@ -14,7 +14,7 @@
 
 #include "IoT/Devices/GNSSSensor.h"
 #include "IoT/Devices/DeviceImpl.h"
-#include "Poco/Serial/SerialPort.h"
+#include "Poco/Buffer.h"
 #include "IoT/GNSS/NMEA/RMCProcessor.h"
 #include "IoT/GNSS/NMEA/GGAProcessor.h"
 #include "Poco/Timestamp.h"

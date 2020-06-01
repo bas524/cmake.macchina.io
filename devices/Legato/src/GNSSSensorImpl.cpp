@@ -16,6 +16,7 @@
 #include "Poco/Buffer.h"
 #include "Poco/Delegate.h"
 #include "Poco/Exception.h"
+#include "Poco/Timespan.h"
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/select.h>
