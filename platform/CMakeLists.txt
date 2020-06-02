@@ -189,7 +189,7 @@ option(ENABLE_WEB_TUNNEL "Enable web-tunnel" ON)
 option(REMGEN_ENABLE_OSP "Enable Open Service Platform" ON)
 
 option(ENABLE_TESTS
-	"Set to OFF|ON (default is OFF) to control build of POCO tests & samples" ON)
+	"Set to OFF|ON (default is OFF) to control build of POCO tests & samples" OFF)
 
 option(POCO_UNBUNDLED
 	"Set to OFF|ON (default is OFF) to control linking dependencies as external" OFF)

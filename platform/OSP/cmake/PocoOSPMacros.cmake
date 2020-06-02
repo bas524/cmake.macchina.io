@@ -99,14 +99,14 @@ function(POCO_MAKE_BUNDLE)
   endif()
 
   if(NOT PARSED_ARGS_PLATFORM_INDEPENDENT)
-    add_custom_target(${PARSED_ARGS_NAME}.bundle
+    add_custom_target(${PARSED_ARGS_NAME}.bundle ALL
                       COMMAND $<TARGET_FILE:BundleCreator> -n${CMAKE_SYSTEM_NAME} -a${CMAKE_SYSTEM_PROCESSOR} ${PARSED_ARGS_BUNDLE_CREATOR_EXT_ATTRS} -o${PARSED_ARGS_BUNDLES_DIR} ${PARSED_ARGS_BUNDLESPEC}
                       WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
                       COMMENT "Make bundle ${out} into ${PARSED_ARGS_BUNDLES_DIR}"
                       DEPENDS ${MAKE_BUNDLE_DEPENDENCIES}
                       )
   else()
-    add_custom_target(${PARSED_ARGS_NAME}.bundle
+    add_custom_target(${PARSED_ARGS_NAME}.bundle ALL
                       COMMAND $<TARGET_FILE:BundleCreator> ${PARSED_ARGS_BUNDLE_CREATOR_EXT_ATTRS} -o${PARSED_ARGS_BUNDLES_DIR} ${PARSED_ARGS_BUNDLESPEC}
                       WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
                       COMMENT "Make bundle ${out} into ${PARSED_ARGS_BUNDLES_DIR}"
@@ -160,12 +160,13 @@ function(POCO_MAKE_BUNDLE_LIBRARY)
         set(HAS_REMOTE "")
         file(STRINGS ${HDR} HAS_REMOTE REGEX "\\/\\/\\s*@\\s* remote\\s*")
         file(STRINGS ${HDR} HAS_BASIC_EVENT REGEX "Poco\\:\\:BasicEvent\\<.*\\>\\s*")
+        file(STRINGS ${HDR} HAS_PARENT_DEVICE REGEX "class\\s*[a-zA-Z0-9_ ]*\\:\\s*[a-zA-Z0-9_]*\\s*[a-zA-Z0-9_]*")
         if (HAS_REMOTE)
           list(APPEND GENERATED_SOURCES ${PARSED_ARGS_REMGEN_SRC_PATH}/I${HDR_NAME}.cpp)
           list(APPEND GENERATED_SOURCES ${PARSED_ARGS_REMGEN_SRC_PATH}/${HDR_NAME}RemoteObject.cpp)
           list(APPEND GENERATED_SOURCES ${PARSED_ARGS_REMGEN_SRC_PATH}/${HDR_NAME}ServerHelper.cpp)
           list(APPEND GENERATED_SOURCES ${PARSED_ARGS_REMGEN_SRC_PATH}/${HDR_NAME}Skeleton.cpp)
-          if (HAS_BASIC_EVENT)
+          if (HAS_BASIC_EVENT OR HAS_PARENT_DEVICE)
             list(APPEND GENERATED_SOURCES ${PARSED_ARGS_REMGEN_SRC_PATH}/${HDR_NAME}EventDispatcher.cpp)
           endif()
         endif()
@@ -260,7 +261,9 @@ function(POCO_MAKE_BUNDLE_LIBRARY)
     POCO_HEADERS_AUTO(BNDL_SRCS ${PARSED_ARGS_HEADERS})
   endif()
 
-  add_library(${PARSED_ARGS_NAME} ${BNDL_SRCS} ${GENERATED_SOURCES})
+  list(APPEND BNDL_SRCS ${GENERATED_SOURCES})
+
+  add_library(${PARSED_ARGS_NAME} ${BNDL_SRCS})
   add_library(Poco::OSP${PARSED_ARGS_NAME} ALIAS ${PARSED_ARGS_NAME})
   set_target_properties(${PARSED_ARGS_NAME}
                         PROPERTIES

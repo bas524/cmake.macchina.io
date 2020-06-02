@@ -47,3 +47,5 @@ if(TARGET Bundle::Creator)
   endif()
 
 endif()
+
+add_subdirectory(server)

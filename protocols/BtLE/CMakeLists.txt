@@ -29,7 +29,7 @@ POCO_MAKE_BUNDLE_LIBRARY(
         WRAP_INCLUDE_PATHS
         ${CMAKE_CURRENT_LIST_DIR}/include
         REMGEN_NAMESPACE IoT::BtLE
-        REMGEN_HEADERS_PATH ${CMAKE_CURRENT_BINARY_DIR}/include/IoT/CAN
+        REMGEN_HEADERS_PATH ${CMAKE_CURRENT_BINARY_DIR}/include/IoT/BtLE
         REMGEN_SRC_PATH ${CMAKE_CURRENT_BINARY_DIR}/src
         REMGEN_COPYRIGHT "Copyright (c) 2014-2020, Applied Informatics Software Engineering GmbH.\nAll rights reserved.\nSPDX-License-Identifier: Apache-2.0"
         REMGEN_SERVER_MODE

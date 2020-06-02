@@ -1,4 +1,4 @@
-set(PROJECT_BUNDLE o.macchina.tf)
+set(PROJECT_BUNDLE io.macchina.tf)
 set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_LIST_DIR}/Tf.bndlspec)
 
 POCO_GENERATE_BUNDLESPEC(

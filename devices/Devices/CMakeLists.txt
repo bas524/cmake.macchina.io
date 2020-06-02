@@ -87,5 +87,6 @@ POCO_MAKE_BUNDLE(NAME ${PROJECT_BUNDLE}
                    Poco::RemotingNG
                    Poco::Util
                    Poco::XML
-                   Poco::Foundation)
+                   Poco::Foundation
+                 )
 

@@ -7,6 +7,9 @@ osp.data               = ${application.configDir}data
 osp.web.cacheResources = true
 osp.web.sessionManager.cookiePersistence = transient
 
+# Note: unofficial list of V8 options can be found here:
+# https://github.com/thlorenz/v8-flags/blob/master/flags-0.11.md
+osp.js.v8.flags = --harmony;--use-strict
 
 #
 # Settings

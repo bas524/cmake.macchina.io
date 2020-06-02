@@ -4,6 +4,10 @@
 # CMakefile for v8 JavaScript engine
 #
 
+if (NOT POCO_BASE)
+  set(POCO_BASE ${PROJECT_SOURCE_DIR})
+endif()
+
 find_package(Python2 COMPONENTS Interpreter REQUIRED)
 
 include(ProcessorCount)
@@ -163,7 +167,7 @@ foreach (V8_HDR ${V8_PLATFORM_HEADERS})
 endforeach ()
 
 add_custom_target(v8_config
-                  COMMAND ${CMAKE_COMMAND} -E env "PATH=${PYTHON_DIR}${PATH_SEP}$ENV{PATH}" "${Python_EXECUTABLE}" ${CMAKE_CURRENT_LIST_DIR}/tools/gyp/gyp_main.py ${GYPFLAGS} --generator-output="${CMAKE_SOURCE_DIR}/JS/V8/out" -Goutput_dir="${CMAKE_SOURCE_DIR}/JS/V8/out" -f ${GYP_GENERATOR} -I"${CMAKE_CURRENT_LIST_DIR}/common.gypi" --depth=. "${CMAKE_CURRENT_LIST_DIR}/v8/src/v8.gyp"
+                  COMMAND ${CMAKE_COMMAND} -E env "PATH=${PYTHON_DIR}${PATH_SEP}$ENV{PATH}" "${Python_EXECUTABLE}" ${CMAKE_CURRENT_LIST_DIR}/tools/gyp/gyp_main.py ${GYPFLAGS} --generator-output="${POCO_BASE}/JS/V8/out" -Goutput_dir="${POCO_BASE}/JS/V8/out" -f ${GYP_GENERATOR} -I"${CMAKE_CURRENT_LIST_DIR}/common.gypi" --depth=. "${CMAKE_CURRENT_LIST_DIR}/v8/src/v8.gyp"
                   WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
                   DEPENDS ${CMAKE_CURRENT_LIST_DIR}/include/v8.h
                   COMMENT "configure V8 with gyp"
@@ -224,6 +228,8 @@ else ()
   set(LIB_V8BASE_LOCATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libv8_libbase${CMAKE_SHARED_LIBRARY_SUFFIX})
   set(LIB_V8PLATFORM_LOCATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libv8_libplatform${CMAKE_SHARED_LIBRARY_SUFFIX})
 endif ()
+
+add_dependencies(v8 v8_config)
 
 add_library(libv8 SHARED IMPORTED GLOBAL)
 add_library(js::libv8 ALIAS libv8)

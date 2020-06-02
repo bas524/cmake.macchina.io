@@ -1,13 +1,12 @@
 POCO_GENERATE_BUNDLESPEC(
-        DESCRIPTION "BundleAdmin"
+        DESCRIPTION "\${bundle.name}"
         NAME com.appinf.osp.bundleadmin
         VERSION 1.1.2
-        VENDOR "Applied Informatics"
-        COPYRIGHT "(c) 2007-2020, Applied Informatics Software Engineering GmbH"
-        ACTIVATOR CryptoBundleActivator
+        VENDOR "\${bundle.vendor}"
+        COPYRIGHT "\${bundle.copyright}"
         #LAZY_START
         RUN_LEVEL 100
-        DEPENDECIES osp.web:1.0.0-2.0.0
+        DEPENDENCIES osp.web:1.0.0-2.0.0
         FILES "bundle/*"
         OUT_BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/BundleAdmin.bndlspec
 )
