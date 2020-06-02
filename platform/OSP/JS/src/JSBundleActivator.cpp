@@ -131,12 +131,13 @@ public:
 	void registerServiceWithORB(ServiceRef::Ptr pServiceRef)
 	{
 		Poco::OSP::Service::Ptr pService = pServiceRef->instance();
-		if (dynamic_cast<Poco::RemotingNG::RemoteObject*>(pService.get()))
+        auto pRemoteObject = dynamic_cast<Poco::RemotingNG::RemoteObject*>(pService.get());
+		if (pRemoteObject)
 		{
 			_pContext->logger().information("Registering service with ORB: " + pServiceRef->name());
-			Poco::RemotingNG::RemoteObject::Ptr pRemoteObject = pService.cast<Poco::RemotingNG::RemoteObject>();
-			std::string uri = Poco::RemotingNG::ORB::instance().registerObject(pRemoteObject, _jsBridgeListenerId);		
-			pRemoteObject->remoting__enableRemoteEvents("jsbridge");	
+			Poco::RemotingNG::RemoteObject::Ptr pRemoteObjectPtr = Poco::RemotingNG::RemoteObject::Ptr(pRemoteObject, true);
+			std::string uri = Poco::RemotingNG::ORB::instance().registerObject(pRemoteObjectPtr, _jsBridgeListenerId);
+            pRemoteObjectPtr->remoting__enableRemoteEvents("jsbridge");
 			pServiceRef->properties().set("jsbridge", uri);
 		}
 	}
