@@ -5,7 +5,7 @@ endif()
 function(POCO_MAKE_BUNDLE)
   cmake_parse_arguments(
           PARSED_ARGS # prefix of output variables
-          "" # list of names of the boolean arguments (only defined ones will be true)
+          "PLATFORM_INDEPENDENT" # list of names of the boolean arguments (only defined ones will be true)
           "NAME;BUNDLESPEC;BUNDLES_DIR" # list of names of mono-valued arguments
           "SOURCES;HEADERS;INCLUDES;DEPENDENCIES;BUNDLE_CREATOR_EXT_ATTRS" # list of names of multi-valued arguments (output variables are lists)
           ${ARGN} # arguments of the function to parse, here we take the all original ones
@@ -23,7 +23,40 @@ function(POCO_MAKE_BUNDLE)
     message(FATAL_ERROR "You must provide a bundle output dir")
   endif()
 
+  set(TO_REMOVE "")
+  set(TO_INCLUDE "")
   if(PARSED_ARGS_SOURCES)
+    foreach(SRC ${PARSED_ARGS_SOURCES})
+      get_filename_component(SRC_EXT ${SRC} EXT)
+      get_filename_component(SRC_BASENAME ${SRC} NAME_WE)
+      if (SRC_EXT STREQUAL ".cpsp")
+        list(APPEND TO_REMOVE ${SRC})
+        list(APPEND TO_INCLUDE ${CMAKE_CURRENT_BINARY_DIR}/src/${SRC_BASENAME}.cpp)
+        list(APPEND TO_INCLUDE ${CMAKE_CURRENT_BINARY_DIR}/src/${SRC_BASENAME}.h)
+      endif()
+    endforeach()
+
+    if (TO_REMOVE)
+      add_custom_command(OUTPUT ${TO_INCLUDE}
+                         PRE_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/src
+                         PRE_BUILD
+                         COMMAND $<TARGET_FILE:PageCompiler> -o${CMAKE_CURRENT_BINARY_DIR}/src --osp ${TO_REMOVE}
+                         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+                         COMMENT "Compiling pages ${TO_REMOVE}"
+                         DEPEND ${CMAKE_CURRENT_BINARY_DIR}/src
+                         )
+    endif()
+
+    foreach(REM_ITEM ${TO_REMOVE})
+      list(REMOVE_ITEM PARSED_ARGS_SOURCES ${REM_ITEM})
+    endforeach()
+
+    # Version Resource
+    if(MSVC AND BUILD_SHARED_LIBS)
+      source_group("Resources" FILES ${POCO_BASE}/DLLVersion.rc)
+      list(APPEND PARSED_ARGS_SOURCES ${POCO_BASE}/DLLVersion.rc)
+    endif()
+
     POCO_SOURCES_AUTO(BNDL_SRCS ${PARSED_ARGS_SOURCES})
 
 
@@ -31,16 +64,15 @@ function(POCO_MAKE_BUNDLE)
       POCO_HEADERS_AUTO(BNDL_SRCS ${PARSED_ARGS_HEADERS})
     endif()
 
-    # Version Resource
-    if(MSVC AND BUILD_SHARED_LIBS)
-      source_group("Resources" FILES ${POCO_BASE}/DLLVersion.rc)
-      list(APPEND BNDL_SRCS ${POCO_BASE}/DLLVersion.rc)
-    endif()
+    foreach(INC_ITEM ${TO_INCLUDE})
+      list(APPEND BNDL_SRCS ${INC_ITEM})
+    endforeach()
 
     add_library(${PARSED_ARGS_NAME} ${BNDL_SRCS})
     add_custom_command(TARGET ${PARSED_ARGS_NAME}
                        PRE_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_LIST_DIR}/bin/${CMAKE_SYSTEM_NAME}/${CMAKE_SYSTEM_PROCESSOR}
                        )
+
     set_target_properties(${PARSED_ARGS_NAME}
                           PROPERTIES
                           OUTPUT_NAME ${PARSED_ARGS_NAME}
@@ -55,7 +87,7 @@ function(POCO_MAKE_BUNDLE)
     endif()
 
     if(PARSED_ARGS_INCLUDES)
-      target_include_directories(${PARSED_ARGS_NAME} PRIVATE ${PARSED_ARGS_INCLUDES})
+      target_include_directories(${PARSED_ARGS_NAME} PRIVATE ${PARSED_ARGS_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR}/src ${CMAKE_CURRENT_LIST_DIR}/src)
     endif()
   else()
     message(STATUS "bundle ${PARSED_ARGS_NAME} hasn't sources")
@@ -66,14 +98,25 @@ function(POCO_MAKE_BUNDLE)
     list(APPEND MAKE_BUNDLE_DEPENDENCIES ${PARSED_ARGS_NAME})
   endif()
 
-  add_custom_target(${PARSED_ARGS_NAME}.bundle
-                     COMMAND $<TARGET_FILE:BundleCreator> -n${CMAKE_SYSTEM_NAME} -a${CMAKE_SYSTEM_PROCESSOR} ${PARSED_ARGS_BUNDLE_CREATOR_EXT_ATTRS} -o${PARSED_ARGS_BUNDLES_DIR} ${PARSED_ARGS_BUNDLESPEC}
-                     WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-                     COMMENT "Make bundle ${out} into ${PARSED_ARGS_BUNDLES_DIR}"
-                     DEPENDS ${MAKE_BUNDLE_DEPENDENCIES}
-                     )
+  if(NOT PARSED_ARGS_PLATFORM_INDEPENDENT)
+    add_custom_target(${PARSED_ARGS_NAME}.bundle
+                      COMMAND $<TARGET_FILE:BundleCreator> -n${CMAKE_SYSTEM_NAME} -a${CMAKE_SYSTEM_PROCESSOR} ${PARSED_ARGS_BUNDLE_CREATOR_EXT_ATTRS} -o${PARSED_ARGS_BUNDLES_DIR} ${PARSED_ARGS_BUNDLESPEC}
+                      WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+                      COMMENT "Make bundle ${out} into ${PARSED_ARGS_BUNDLES_DIR}"
+                      DEPENDS ${MAKE_BUNDLE_DEPENDENCIES}
+                      )
+  else()
+    add_custom_target(${PARSED_ARGS_NAME}.bundle
+                      COMMAND $<TARGET_FILE:BundleCreator> ${PARSED_ARGS_BUNDLE_CREATOR_EXT_ATTRS} -o${PARSED_ARGS_BUNDLES_DIR} ${PARSED_ARGS_BUNDLESPEC}
+                      WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+                      COMMENT "Make bundle ${out} into ${PARSED_ARGS_BUNDLES_DIR}"
+                      DEPENDS ${MAKE_BUNDLE_DEPENDENCIES}
+                      )
+  endif()
 
-  add_dependencies(${PARSED_ARGS_NAME}.bundle ${PARSED_ARGS_DEPENDENCIES})
+  if (PARSED_ARGS_DEPENDENCIES)
+    add_dependencies(${PARSED_ARGS_NAME}.bundle ${PARSED_ARGS_DEPENDENCIES})
+  endif()
 endfunction()
 
 function(POCO_MAKE_BUNDLE_LIBRARY)
@@ -239,7 +282,7 @@ endfunction()
 function(POCO_GENERATE_BUNDLESPEC)
   cmake_parse_arguments(
           PARSED_ARGS # prefix of output variables
-          "LAZY_START" # list of names of the boolean arguments (only defined ones will be true)
+          "LAZY_START;NO_CODES" # list of names of the boolean arguments (only defined ones will be true)
           "DESCRIPTION;NAME;VERSION;VENDOR;COPYRIGHT;ACTIVATOR;RUN_LEVEL;OUT_BUNDLESPEC" # list of names of mono-valued arguments
           "DEPENDENCIES;CODES;FILES" # list of names of multi-valued arguments (output variables are lists)
           ${ARGN} # arguments of the function to parse, here we take the all original ones
@@ -343,39 +386,41 @@ function(POCO_GENERATE_BUNDLESPEC)
 
   set(FIST_SCODE false)
   set(SEP_SCODE "")
-  foreach(LIB ${PARSED_ARGS_CODES})
+  if (NOT PARSED_ARGS_NO_CODES)
+    foreach(LIB ${PARSED_ARGS_CODES})
 
-    string(FIND "${LIB}" ":" NEED_TO_CHECK)
-    if (NEED_TO_CHECK EQUAL -1)
-      set(CODE ${LIB})
-      set(CHECK_VER "NO_VERSION")
-    else()
-      string(REPLACE ":" ";" LDEP ${LIB})
-      list(GET LDEP 0 CODE)
-      list(GET LDEP 1 CHECK_VER)
-    endif()
+      string(FIND "${LIB}" ":" NEED_TO_CHECK)
+      if (NEED_TO_CHECK EQUAL -1)
+        set(CODE ${LIB})
+        set(CHECK_VER "NO_VERSION")
+      else()
+        string(REPLACE ":" ";" LDEP ${LIB})
+        list(GET LDEP 0 CODE)
+        list(GET LDEP 1 CHECK_VER)
+      endif()
 
-    set(_bundle_binary_files "${_bundle_binary_files}${SEP_SCODE} \n      ${BASE_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}${CODE}${WILD_PREF}${CMAKE_SHARED_LIBRARY_SUFFIX}${WILD_POST}")
-    if(NOT FIST_SCODE)
-      set(SEP_SCODE ",\n")
-      set(FIST_SCODE true)
-    endif()
-    set(_bundle_binary_files "${_bundle_binary_files}${SEP_SCODE}      ${BASE_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}${CODE}d${WILD_PREF}${CMAKE_SHARED_LIBRARY_SUFFIX}${WILD_POST}")
+      set(_bundle_binary_files "${_bundle_binary_files}${SEP_SCODE} \n      ${BASE_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}${CODE}${WILD_PREF}${CMAKE_SHARED_LIBRARY_SUFFIX}${WILD_POST}")
+      if(NOT FIST_SCODE)
+        set(SEP_SCODE ",\n")
+        set(FIST_SCODE true)
+      endif()
+      set(_bundle_binary_files "${_bundle_binary_files}${SEP_SCODE}      ${BASE_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}${CODE}d${WILD_PREF}${CMAKE_SHARED_LIBRARY_SUFFIX}${WILD_POST}")
 
-    string(FIND "${CODE}" "Poco" POCO_LIBPRFIX_FOUND)
+      string(FIND "${CODE}" "Poco" POCO_LIBPRFIX_FOUND)
 
-    string(COMPARE NOTEQUAL ${CHECK_VER} "HAS_VERSION" HAS_NOT_VERSION)
-    if (POCO_LIBPRFIX_FOUND GREATER -1)
-      set(HAS_NOT_VERSION false)
-    endif ()
+      string(COMPARE NOTEQUAL ${CHECK_VER} "HAS_VERSION" HAS_NOT_VERSION)
+      if (POCO_LIBPRFIX_FOUND GREATER -1)
+        set(HAS_NOT_VERSION false)
+      endif ()
 
-    if(HAS_NOT_VERSION)
-      set(_bundle_binary_files "${_bundle_binary_files}${SEP_SCODE}      ${BASE_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}${CODE}${CMAKE_SHARED_LIBRARY_SUFFIX}")
-      set(_bundle_binary_files "${_bundle_binary_files}${SEP_SCODE}      ${BASE_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}${CODE}d${CMAKE_SHARED_LIBRARY_SUFFIX}")
-    endif()
+      if(HAS_NOT_VERSION)
+        set(_bundle_binary_files "${_bundle_binary_files}${SEP_SCODE}      ${BASE_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}${CODE}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+        set(_bundle_binary_files "${_bundle_binary_files}${SEP_SCODE}      ${BASE_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}${CODE}d${CMAKE_SHARED_LIBRARY_SUFFIX}")
+      endif()
 
-  endforeach()
-  set(_bundle_binary_files "${_bundle_binary_files}${SEP_SCODE}      bin/${CMAKE_SYSTEM_NAME}/${CMAKE_SYSTEM_PROCESSOR}/*${CMAKE_SHARED_LIBRARY_SUFFIX}" )
+    endforeach()
+    set(_bundle_binary_files "${_bundle_binary_files}${SEP_SCODE}      bin/${CMAKE_SYSTEM_NAME}/${CMAKE_SYSTEM_PROCESSOR}/*${CMAKE_SHARED_LIBRARY_SUFFIX}" )
+  endif()
 
   set(FIST_SCODE false)
   set(SEP_SCODE "")
