@@ -1,7 +1,4 @@
 include(CMakeParseArguments)
-if (NOT POCO_BASE)
-  set(POCO_BASE ${PROJECT_SOURCE_DIR})
-endif()
 function(POCO_MAKE_BUNDLE)
   cmake_parse_arguments(
           PARSED_ARGS # prefix of output variables
@@ -243,7 +240,7 @@ function(POCO_MAKE_BUNDLE_LIBRARY)
     else()
       set(_out_flat_include_enable "false")
     endif()
-
+    message(STATUS "Generate ${PARSED_ARGS_GENERATE_REMOTING}")
     configure_file(${POCO_BASE}/OSP/cmake/RemoteGen.xml.in ${PARSED_ARGS_GENERATE_REMOTING})
 
     add_custom_command(OUTPUT ${GENERATED_SOURCES}
@@ -304,7 +301,7 @@ function(POCO_GENERATE_BUNDLESPEC)
   if(NOT PARSED_ARGS_NAME)
     message(FATAL_ERROR "You must provide a bundle symbolic name")
   else()
-    set(_bundle_simbolic_name ${PARSED_ARGS_NAME})
+    set(_bundle_symbolic_name ${PARSED_ARGS_NAME})
   endif()
 
   if(NOT PARSED_ARGS_VERSION)
@@ -434,7 +431,7 @@ function(POCO_GENERATE_BUNDLESPEC)
       set(FIST_SCODE true)
     endif()
   endforeach()
-
+  message(STATUS "Generate ${PARSED_ARGS_OUT_BUNDLESPEC}")
   configure_file(${POCO_BASE}/OSP/cmake/PocoBundle.bndlspec.in ${PARSED_ARGS_OUT_BUNDLESPEC})
 
 endfunction()

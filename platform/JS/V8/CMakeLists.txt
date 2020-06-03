@@ -4,10 +4,6 @@
 # CMakefile for v8 JavaScript engine
 #
 
-if (NOT POCO_BASE)
-  set(POCO_BASE ${PROJECT_SOURCE_DIR})
-endif()
-
 find_package(Python2 COMPONENTS Interpreter REQUIRED)
 
 include(ProcessorCount)

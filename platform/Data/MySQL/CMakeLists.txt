@@ -8,8 +8,8 @@ POCO_HEADERS_AUTO(MYSQL_SRCS ${HDRS_G})
 
 # Version Resource
 if(MSVC AND BUILD_SHARED_LIBS)
-	source_group("Resources" FILES ${PROJECT_SOURCE_DIR}/DLLVersion.rc)
-	list(APPEND MYSQL_SRCS ${PROJECT_SOURCE_DIR}/DLLVersion.rc)
+	source_group("Resources" FILES ${POCO_BASE}/DLLVersion.rc)
+	list(APPEND MYSQL_SRCS ${POCO_BASE}/DLLVersion.rc)
 endif()
 
 add_library(DataMySQL ${MYSQL_SRCS})

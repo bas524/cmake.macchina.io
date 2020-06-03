@@ -2,7 +2,7 @@
 <bundlespec>
   <manifest>
     <name>${_bundle_description}</name>
-    <symbolicName>${_bundle_simbolic_name}</symbolicName>
+    <symbolicName>${_bundle_symbolic_name}</symbolicName>
     <version>${_bundle_version}</version>
     <vendor>${_bundle_vendor}</vendor>
     <copyright>${_bundle_copyright}</copyright>

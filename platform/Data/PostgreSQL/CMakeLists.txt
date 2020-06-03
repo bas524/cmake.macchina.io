@@ -8,8 +8,8 @@ POCO_HEADERS_AUTO(POSTGRESQL_SRCS ${HDRS_G})
 
 # Version Resource
 if(MSVC AND BUILD_SHARED_LIBS)
-	source_group("Resources" FILES ${PROJECT_SOURCE_DIR}/DLLVersion.rc)
-	list(APPEND POSTGRESQL_SRCS ${PROJECT_SOURCE_DIR}/DLLVersion.rc)
+	source_group("Resources" FILES ${POCO_BASE}/DLLVersion.rc)
+	list(APPEND POSTGRESQL_SRCS ${POCO_BASE}/DLLVersion.rc)
 endif()
 
 add_library(DataPostgreSQL ${POSTGRESQL_SRCS})
