@@ -33,9 +33,11 @@ function(POCO_MAKE_BUNDLE)
       endif()
     endforeach()
 
+    execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/src)
+    execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/include)
+
     if (TO_REMOVE)
       add_custom_command(OUTPUT ${TO_INCLUDE}
-                         PRE_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/src
                          PRE_BUILD
                          COMMAND $<TARGET_FILE:PageCompiler> -o${CMAKE_CURRENT_BINARY_DIR}/src --osp ${TO_REMOVE}
                          WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}

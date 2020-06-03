@@ -70,7 +70,7 @@ if (CMAKE_SYSTEM_PROCESSOR STREQUAL "i686")
   set(V8ARCH "ia32")
 endif ()
 
-if (CMAKE_SYSTEM_PROCESSOR STREQUAL "arm") #may be need to find substring
+if (CMAKE_SYSTEM_PROCESSOR STREQUAL "arm") #fixme : may be need to find substring
   set(V8ARCH "arm")
   list(APPEND GYPFLAGS "-Darm_fpu=default")
   list(APPEND GYPFLAGS "-Darm_float_abi=default")
@@ -116,7 +116,7 @@ if (CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "i686")
   set(V8HOSTARCH "ia32")
 endif ()
 
-if (CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm") # maybe error
+if (CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm") #fixme : maybe error
   set(V8HOSTARCH "arm")
 endif ()
 
@@ -201,9 +201,16 @@ else ()
 
   set(EXT_CXX_FLAGS -fpic)
   list(APPEND EXT_CXX_FLAGS "-DV8_DEPRECATION_WARNINGS=1")
-  list(APPEND EXT_CXX_FLAGS -Wno-null-pointer-arithmetic)
-  list(APPEND EXT_CXX_FLAGS -Wno-defaulted-function-deleted)
-  list(APPEND EXT_CXX_FLAGS -Wno-deprecated-declarations)
+  if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+      list(APPEND EXT_CXX_FLAGS -Wno-null-pointer-arithmetic)
+      list(APPEND EXT_CXX_FLAGS -Wno-defaulted-function-deleted)
+      list(APPEND EXT_CXX_FLAGS -Wno-deprecated-declarations)
+  endif ()
+  if (CMAKE_COMPILER_IS_GNUCXX)
+      list(APPEND EXT_CXX_FLAGS -Wno-maybe-uninitialized)
+      list(APPEND EXT_CXX_FLAGS -Wno-implicit-fallthrough)
+      list(APPEND EXT_CXX_FLAGS -Wno-deprecated-declarations)
+  endif()
 
   add_custom_target(v8 ALL
                     COMMAND ${GYP_GENERATOR} -j${N} -C ${CMAKE_CURRENT_LIST_DIR}/out BUILDTYPE=${CMAKE_BUILD_TYPE} CFLAGS="${EXT_C_FLAGS}" CXXFLAGS="${EXT_CXX_FLAGS}" v8 v8_libplatform
