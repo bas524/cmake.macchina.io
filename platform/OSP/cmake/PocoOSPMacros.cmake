@@ -177,6 +177,9 @@ function(POCO_MAKE_BUNDLE_LIBRARY)
       set(_include_paths "${_include_paths}\n${INC_PATH}")
     endforeach()
 
+    execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${PARSED_ARGS_REMGEN_SRC_PATH})
+    execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${PARSED_ARGS_REMGEN_HEADERS_PATH})
+
     set(_out_namespace ${PARSED_ARGS_REMGEN_NAMESPACE})
 
     set(_out_include_path ${PARSED_ARGS_REMGEN_HEADERS_PATH})

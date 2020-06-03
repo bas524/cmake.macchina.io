@@ -210,6 +210,8 @@ else ()
       list(APPEND EXT_CXX_FLAGS -Wno-maybe-uninitialized)
       list(APPEND EXT_CXX_FLAGS -Wno-implicit-fallthrough)
       list(APPEND EXT_CXX_FLAGS -Wno-deprecated-declarations)
+      list(APPEND EXT_CXX_FLAGS -Wno-unused-but-set-parameter)
+      list(APPEND EXT_CXX_FLAGS -Wno-unused-function)
   endif()
 
   add_custom_target(v8 ALL
@@ -235,6 +237,7 @@ endif ()
 add_dependencies(v8 v8_config)
 
 add_library(libv8 SHARED IMPORTED GLOBAL)
+add_dependencies(libv8 v8)
 add_library(js::libv8 ALIAS libv8)
 set_target_properties(libv8 PROPERTIES
                       IMPORTED_LOCATION "${LIB_V8_LOCATION}"
