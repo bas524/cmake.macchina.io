@@ -54,7 +54,7 @@ CMakeFiles
 CMakeCache.txt
 CPackConfig.cmake
 CPackSourceConfig.cmake
-cmake_*
+#cmake_*
 cmake-build-*
 
 # Packages #
