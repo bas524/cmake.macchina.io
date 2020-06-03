@@ -123,6 +123,7 @@ platform/JS/V8/out/
 ########
 server/data/
 
+# CLion #
+########
 /.idea/
-/cmake-build-debug/
-/cmake-build-release/
+cmake-build-*
