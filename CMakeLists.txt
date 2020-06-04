@@ -22,6 +22,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(MACCHINA_BASE ${CMAKE_SOURCE_DIR})
 set(POCO_BASE ${CMAKE_SOURCE_DIR}/platform)
 
+if(MSVC)
+  add_definitions(-DNOMINMAX)
+endif()
+
 add_subdirectory(platform)
 
 
