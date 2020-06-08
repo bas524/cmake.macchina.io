@@ -1,3 +1,5 @@
+set(SRCS "")
+
 # Sources
 file(GLOB SRCS_G "src/*.cpp")
 POCO_SOURCES_AUTO(SRCS ${SRCS_G})

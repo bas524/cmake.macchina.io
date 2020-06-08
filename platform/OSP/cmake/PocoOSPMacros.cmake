@@ -1,10 +1,29 @@
 include(CMakeParseArguments)
+
+set(PARAM_PREFIX "--")
+if(MSVC)
+  set(PARAM_PREFIX "/")
+endif()
+
+if(MSVC)
+    if(MSVC_CXX_ARCHITECTURE_ID STREQUAL "X86")
+      set(BNDL_SYSTEM_PROCESSOR "IA32")
+    else()
+       set(BNDL_SYSTEM_PROCESSOR "AMD64")
+    endif()
+       set(BNDL_SYSTEM_NAME "Windows_NT")
+else()
+  set(BNDL_SYSTEM_NAME ${CMAKE_SYSTEM_NAME})
+  set(BNDL_SYSTEM_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR})
+endif()
+
+
 function(POCO_MAKE_BUNDLE)
   cmake_parse_arguments(
           PARSED_ARGS # prefix of output variables
           "PLATFORM_INDEPENDENT" # list of names of the boolean arguments (only defined ones will be true)
           "NAME;BUNDLESPEC;BUNDLES_DIR" # list of names of mono-valued arguments
-          "SOURCES;HEADERS;INCLUDES;DEPENDENCIES;BUNDLE_CREATOR_EXT_ATTRS" # list of names of multi-valued arguments (output variables are lists)
+          "SOURCES;HEADERS;INCLUDES;DEPENDENCIES;BUNDLE_CREATOR_EXT_ATTRS;DEFINITIONS" # list of names of multi-valued arguments (output variables are lists)
           ${ARGN} # arguments of the function to parse, here we take the all original ones
   )
   # note: if it remains unparsed arguments, here, they can be found in variable PARSED_ARGS_UNPARSED_ARGUMENTS
@@ -39,7 +58,7 @@ function(POCO_MAKE_BUNDLE)
     if (TO_REMOVE)
       add_custom_command(OUTPUT ${TO_INCLUDE}
                          PRE_BUILD
-                         COMMAND $<TARGET_FILE:PageCompiler> -o${CMAKE_CURRENT_BINARY_DIR}/src --osp ${TO_REMOVE}
+                         COMMAND $<TARGET_FILE:PageCompiler> ${PARAM_PREFIX}output-dir=${CMAKE_CURRENT_BINARY_DIR}/src  ${PARAM_PREFIX}osp ${TO_REMOVE}
                          WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
                          COMMENT "Compiling pages ${TO_REMOVE}"
                          DEPEND ${CMAKE_CURRENT_BINARY_DIR}/src
@@ -69,25 +88,37 @@ function(POCO_MAKE_BUNDLE)
 
     add_library(${PARSED_ARGS_NAME} ${BNDL_SRCS})
     add_custom_command(TARGET ${PARSED_ARGS_NAME}
-                       PRE_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_LIST_DIR}/bin/${CMAKE_SYSTEM_NAME}/${CMAKE_SYSTEM_PROCESSOR}
+                       PRE_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_LIST_DIR}/bin/${BNDL_SYSTEM_NAME}/${BNDL_SYSTEM_PROCESSOR}
                        )
-
+    string(REPLACE "." "_" LIB_EXPORT_NAME ${PARSED_ARGS_NAME})
+    string(REPLACE "-" "_" LIB_EXPORT_NAME ${LIB_EXPORT_NAME})
     set_target_properties(${PARSED_ARGS_NAME}
                           PROPERTIES
                           OUTPUT_NAME ${PARSED_ARGS_NAME}
                           PREFIX ""
-                          LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin/${CMAKE_SYSTEM_NAME}/${CMAKE_SYSTEM_PROCESSOR}
-                          RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin/${CMAKE_SYSTEM_NAME}/${CMAKE_SYSTEM_PROCESSOR}
-                          COMPILE_PDB_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/bin/${CMAKE_SYSTEM_NAME}/${CMAKE_SYSTEM_PROCESSOR}
+                          LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_LIST_DIR}/bin/${BNDL_SYSTEM_NAME}/${BNDL_SYSTEM_PROCESSOR}
+                          RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_LIST_DIR}/bin/${BNDL_SYSTEM_NAME}/${BNDL_SYSTEM_PROCESSOR}
+                          COMPILE_PDB_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_LIST_DIR}/bin/${BNDL_SYSTEM_NAME}/${BNDL_SYSTEM_PROCESSOR}
+
+                          LIBRARY_OUTPUT_DIRECTORY_DEBUG ${CMAKE_CURRENT_LIST_DIR}/bin/${BNDL_SYSTEM_NAME}/${BNDL_SYSTEM_PROCESSOR}
+                          RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_CURRENT_LIST_DIR}/bin/${BNDL_SYSTEM_NAME}/${BNDL_SYSTEM_PROCESSOR}
+                          COMPILE_PDB_OUTPUT_DIRECTORY_DEBUG ${CMAKE_CURRENT_LIST_DIR}/bin/${BNDL_SYSTEM_NAME}/${BNDL_SYSTEM_PROCESSOR}
+
+                          LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_CURRENT_LIST_DIR}/bin/${BNDL_SYSTEM_NAME}/${BNDL_SYSTEM_PROCESSOR}
+                          RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_CURRENT_LIST_DIR}/bin/${BNDL_SYSTEM_NAME}/${BNDL_SYSTEM_PROCESSOR}
+                          COMPILE_PDB_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_CURRENT_LIST_DIR}/bin/${BNDL_SYSTEM_NAME}/${BNDL_SYSTEM_PROCESSOR}
+                          DEFINE_SYMBOL OSP${LIB_EXPORT_NAME}_EXPORTS
                           )
+    foreach(D_SYMBOL ${PARSED_ARGS_DEFINITIONS})
+      target_compile_definitions(${PARSED_ARGS_NAME} PRIVATE ${D_SYMBOL})
+    endforeach()
 
     if(PARSED_ARGS_DEPENDENCIES)
       target_link_libraries(${PARSED_ARGS_NAME} PRIVATE ${PARSED_ARGS_DEPENDENCIES})
     endif()
 
-    if(PARSED_ARGS_INCLUDES)
-      target_include_directories(${PARSED_ARGS_NAME} PRIVATE ${PARSED_ARGS_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR}/src ${CMAKE_CURRENT_LIST_DIR}/src)
-    endif()
+    target_include_directories(${PARSED_ARGS_NAME} PRIVATE ${PARSED_ARGS_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/include ${CMAKE_CURRENT_LIST_DIR}/src)
+    
   else()
     message(STATUS "bundle ${PARSED_ARGS_NAME} hasn't sources")
   endif()
@@ -96,17 +127,22 @@ function(POCO_MAKE_BUNDLE)
   if (TARGET ${PARSED_ARGS_NAME})
     list(APPEND MAKE_BUNDLE_DEPENDENCIES ${PARSED_ARGS_NAME})
   endif()
+  
+  set(ADDITIONAL_ATTRS "")
+  foreach(EXT_ATTR ${PARSED_ARGS_BUNDLE_CREATOR_EXT_ATTRS})
+    list(APPEND ADDITIONAL_ATTRS "${PARAM_PREFIX}${EXT_ATTR}")
+  endforeach()
 
   if(NOT PARSED_ARGS_PLATFORM_INDEPENDENT)
     add_custom_target(${PARSED_ARGS_NAME}.bundle ALL
-                      COMMAND $<TARGET_FILE:BundleCreator> -n${CMAKE_SYSTEM_NAME} -a${CMAKE_SYSTEM_PROCESSOR} ${PARSED_ARGS_BUNDLE_CREATOR_EXT_ATTRS} -o${PARSED_ARGS_BUNDLES_DIR} ${PARSED_ARGS_BUNDLESPEC}
+                      COMMAND $<TARGET_FILE:BundleCreator> ${PARAM_PREFIX}osname=${BNDL_SYSTEM_NAME} ${PARAM_PREFIX}osarch=${BNDL_SYSTEM_PROCESSOR} ${ADDITIONAL_ATTRS} ${PARAM_PREFIX}output-dir=${PARSED_ARGS_BUNDLES_DIR} ${PARSED_ARGS_BUNDLESPEC}
                       WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
                       COMMENT "Make bundle ${out} into ${PARSED_ARGS_BUNDLES_DIR}"
                       DEPENDS ${MAKE_BUNDLE_DEPENDENCIES}
                       )
   else()
     add_custom_target(${PARSED_ARGS_NAME}.bundle ALL
-                      COMMAND $<TARGET_FILE:BundleCreator> ${PARSED_ARGS_BUNDLE_CREATOR_EXT_ATTRS} -o${PARSED_ARGS_BUNDLES_DIR} ${PARSED_ARGS_BUNDLESPEC}
+                      COMMAND $<TARGET_FILE:BundleCreator> ${ADDITIONAL_ATTRS} ${PARAM_PREFIX}output-dir=${PARSED_ARGS_BUNDLES_DIR} ${PARSED_ARGS_BUNDLESPEC}
                       WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
                       COMMENT "Make bundle ${out} into ${PARSED_ARGS_BUNDLES_DIR}"
                       DEPENDS ${MAKE_BUNDLE_DEPENDENCIES}
@@ -123,7 +159,7 @@ function(POCO_MAKE_BUNDLE_LIBRARY)
           PARSED_ARGS # prefix of output variables
           "REMGEN_ENABLE_OSP;REMGEN_ENABLE_TIMESTAMPS;REMGEN_ENABLE_FLAT_INCLUDES;REMGEN_CLIENT_MODE;REMGEN_SERVER_MODE;REMGEN_BOTH_MODE;REMGEN_INTERFACE_MODE" # list of names of the boolean arguments (only defined ones will be true)
           "NAME;VERSION;OUTPUT_NAME;GENERATE_REMOTING;REMGEN_NAMESPACE;REMGEN_HEADERS_PATH;REMGEN_SRC_PATH;REMGEN_COPYRIGHT;REMGEN_INCLUDE_ROOT" # list of names of mono-valued arguments
-          "SOURCES;HEADERS;INCLUDES;DEPENDENCIES;WRAP_HEADERS;WRAP_INCLUDE_PATHS" # list of names of multi-valued arguments (output variables are lists)
+          "SOURCES;HEADERS;INCLUDES;DEPENDENCIES;WRAP_HEADERS;WRAP_INCLUDE_PATHS;DEFINITIONS" # list of names of multi-valued arguments (output variables are lists)
           ${ARGN} # arguments of the function to parse, here we take the all original ones
   )
   if(NOT PARSED_ARGS_NAME)
@@ -250,7 +286,7 @@ function(POCO_MAKE_BUNDLE_LIBRARY)
 
     add_custom_command(OUTPUT ${GENERATED_SOURCES}
                        BYPRODUCTS ${GENERATED_SOURCES}
-                       COMMAND $<TARGET_FILE:RemoteGenNG> -C${COMPILER_ID} -DPOCO_BASE=${POCO_BASE} ${PARSED_ARGS_GENERATE_REMOTING}
+                       COMMAND $<TARGET_FILE:RemoteGenNG> ${PARAM_PREFIX}compiler=${COMPILER_ID} ${PARAM_PREFIX}define=POCO_BASE=${POCO_BASE} ${PARSED_ARGS_GENERATE_REMOTING}
                        COMMENT "Generate proxy-stubs for ${PARSED_ARGS_NAME}"
                        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
                        DEPENDS RemoteGenNG
@@ -267,11 +303,19 @@ function(POCO_MAKE_BUNDLE_LIBRARY)
 
   add_library(${PARSED_ARGS_NAME} ${BNDL_SRCS})
   add_library(Poco::OSP${PARSED_ARGS_NAME} ALIAS ${PARSED_ARGS_NAME})
+  string(REPLACE "." "_" LIB_EXPORT_NAME ${PARSED_ARGS_NAME})
+  string(REPLACE "-" "_" LIB_EXPORT_NAME ${LIB_EXPORT_NAME})
   set_target_properties(${PARSED_ARGS_NAME}
                         PROPERTIES
                         SOVERSION ${PARSED_ARGS_VERSION}
                         OUTPUT_NAME ${PARSED_ARGS_OUTPUT_NAME}
+                        DEFINE_SYMBOL OSP${LIB_EXPORT_NAME}_EXPORTS
                         )
+  target_compile_definitions(${PARSED_ARGS_NAME} PRIVATE ${LIB_EXPORT_NAME}_EXPORTS)
+
+  foreach(D_SYMBOL ${PARSED_ARGS_DEFINITIONS})
+    target_compile_definitions(${PARSED_ARGS_NAME} PRIVATE ${D_SYMBOL})
+  endforeach()
 
   target_link_libraries(${PARSED_ARGS_NAME} PUBLIC ${PARSED_ARGS_DEPENDENCIES})
   target_include_directories(${PARSED_ARGS_NAME}
@@ -279,9 +323,8 @@ function(POCO_MAKE_BUNDLE_LIBRARY)
                              $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
                              $<BUILD_INTERFACE:${PARSED_ARGS_REMGEN_INCLUDE_ROOT}>
                              $<INSTALL_INTERFACE:include>
-                             PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
                              )
-
+  target_include_directories(${PARSED_ARGS_NAME} PRIVATE ${PARSED_ARGS_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR}/src ${CMAKE_CURRENT_LIST_DIR}/src)
 endfunction()
 
 function(POCO_GENERATE_BUNDLESPEC)
@@ -424,7 +467,7 @@ function(POCO_GENERATE_BUNDLESPEC)
       endif()
 
     endforeach()
-    set(_bundle_binary_files "${_bundle_binary_files}${SEP_SCODE}      bin/${CMAKE_SYSTEM_NAME}/${CMAKE_SYSTEM_PROCESSOR}/*${CMAKE_SHARED_LIBRARY_SUFFIX}" )
+    set(_bundle_binary_files "${_bundle_binary_files}${SEP_SCODE}      bin/${BNDL_SYSTEM_NAME}/${BNDL_SYSTEM_PROCESSOR}/*${CMAKE_SHARED_LIBRARY_SUFFIX}" )
   endif()
 
   set(FIST_SCODE false)

@@ -84,4 +84,5 @@ POCO_MAKE_BUNDLE(NAME ${PROJECT_BUNDLE}
                    Poco::Util
                    Poco::XML
                    Poco::Foundation
+                 DEFINITIONS IoTTf_EXPORTS
                  )

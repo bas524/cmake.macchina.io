@@ -49,5 +49,6 @@ POCO_MAKE_BUNDLE(NAME ${PROJECT_BUNDLE}
                  BUNDLESPEC ${PROJECT_BUNDLE_SPEC}
                  BUNDLES_DIR ${BUNDLES_OUTPUT_DIR}
                  DEPENDENCIES Poco::OSPIoTCANDevices
+                 DEFINITIONS IoTCANDevices_EXPORTS
                  )
 

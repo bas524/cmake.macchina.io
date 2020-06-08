@@ -27,27 +27,27 @@ find_package(PkgConfig QUIET)
 pkg_check_modules(PC_APR QUIET apr-1)
 
 find_path(APR_INCLUDE_DIR apr.h
-	HINTS
-		${APR_ROOT_DIR}/include
-		${APR_ROOT_INCLUDE_DIRS}
-	PATHS
-		${PC_APR_INCLUDE_DIRS}
-		/usr/local/include
-		/usr/include
-	PATH_SUFFIXES
-		apr-1
-		apr-1.0
+    HINTS
+        ${APR_ROOT_DIR}/include
+        ${APR_ROOT_INCLUDE_DIRS}
+    PATHS
+        ${PC_APR_INCLUDE_DIRS}
+        /usr/local/include
+        /usr/include
+    PATH_SUFFIXES
+        apr-1
+        apr-1.0
 )
 
 find_library(APR_LIBRARY
   NAMES apr-1 ${APR_NAMES}
   HINTS
-	${APR_ROOT_DIR}/lib
-	${APR_ROOT_LIBRARY_DIRS}
+    ${APR_ROOT_DIR}/lib
+    ${APR_ROOT_LIBRARY_DIRS}
   PATHS
-	${PC_APR_LIBRARY_DIRS}
-	/usr/lib
-	/usr/local/lib
+    ${PC_APR_LIBRARY_DIRS}
+    /usr/lib
+    /usr/local/lib
   )
 
 set(APR_VERSION ${PC_APR_VERSION})
@@ -55,8 +55,8 @@ set(APR_VERSION ${PC_APR_VERSION})
 find_package_handle_standard_args(APR
   FOUND_VAR APR_FOUND
   REQUIRED_VARS
-	APR_INCLUDE_DIR
-	APR_LIBRARY
+    APR_INCLUDE_DIR
+    APR_LIBRARY
   VERSION_VAR APR_VERSION
 )
 
@@ -73,9 +73,9 @@ endif()
 if(APR_FOUND AND NOT TARGET Apache::Apr)
   add_library(Apache::Apr UNKNOWN IMPORTED)
   set_target_properties(Apache::Apr PROPERTIES
-	IMPORTED_LOCATION "${APR_LIBRARY}"
-	INTERFACE_COMPILE_OPTIONS "${PC_APR_CFLAGS_OTHER}"
-	INTERFACE_INCLUDE_DIRECTORIES "${APR_INCLUDE_DIR}"
+    IMPORTED_LOCATION "${APR_LIBRARY}"
+    INTERFACE_COMPILE_OPTIONS "${PC_APR_CFLAGS_OTHER}"
+    INTERFACE_INCLUDE_DIRECTORIES "${APR_INCLUDE_DIR}"
   )
 endif()
 

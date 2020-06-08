@@ -29,5 +29,5 @@ POCO_MAKE_BUNDLE(NAME ${PROJECT_BUNDLE}
                    Poco::Util
                    Poco::XML
                    Poco::Foundation
-                 BUNDLE_CREATOR_EXT_ATTRS -Npng,gif,jpg
+                 BUNDLE_CREATOR_EXT_ATTRS no-deflate=png,gif,jpg
                  )

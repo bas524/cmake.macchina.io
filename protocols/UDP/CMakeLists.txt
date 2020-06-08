@@ -61,4 +61,5 @@ POCO_MAKE_BUNDLE(NAME ${PROJECT_BUNDLE}
                    Poco::JSON
                    Poco::XML
                    Poco::Foundation
+                 DEFINITIONS IoTUDP_EXPORTS
                  )

@@ -77,7 +77,7 @@ void GGAProcessor::processSentence(const Sentence& sentence)
 		
 			if (!sentence[5].empty())
 			{
-				gga.quality = static_cast<FixQuality>(Poco::NumberParser::parseFloat(sentence[5]));
+				gga.quality = static_cast<FixQuality>(static_cast<int>(Poco::NumberParser::parseFloat(sentence[5])));
 			}
 			else
 			{

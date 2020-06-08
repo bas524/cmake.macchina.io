@@ -4,7 +4,11 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   add_definitions(-DOSX)
   add_compile_options(-Wno-deprecated-declarations)
 endif ()
-
+if(MSVC)
+  add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+  add_definitions(-DWIN32_LEAN_AND_MEAN)
+  add_definitions(-DNOMINMAX)
+endif()
 add_definitions(-DOPENSSL)
 
 # Sources
@@ -43,3 +47,7 @@ POCO_MAKE_BUNDLE_LIBRARY(
         DEPENDENCIES OpenSSL::SSL OpenSSL::Crypto
         OUTPUT_NAME PahoMQTT
 )
+
+if (MSVC)
+  target_link_libraries(PahoMQTT PUBLIC ws2_32.lib Crypt32.lib)
+endif()

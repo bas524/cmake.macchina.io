@@ -2,7 +2,7 @@
 # Copyright (c) 2004-2006, Applied Informatics Software Engineering GmbH.
 # and Contributors.
 #
-# SPDX-License-Identifier:	BSL-1.0
+# SPDX-License-Identifier:    BSL-1.0
 #
 # Collection of common functionality for Poco CMake
 
@@ -10,43 +10,43 @@
 #
 # CMAKE_MC_COMPILER - where to find mc.exe
 if(WIN32)
-	# cmake has CMAKE_RC_COMPILER, but no message compiler
-	if("${CMAKE_GENERATOR}" MATCHES "Visual Studio")
-		# this path is only present for 2008+, but we currently require PATH to
-		# be set up anyway
-		get_filename_component(sdk_dir "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows;CurrentInstallFolder]" REALPATH)
-		get_filename_component(kit_dir "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows Kits\\Installed Roots;KitsRoot]" REALPATH)
-		get_filename_component(kit81_dir "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows Kits\\Installed Roots;KitsRoot81]" REALPATH)
-		get_filename_component(kit10_dir "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows Kits\\Installed Roots;KitsRoot10]" REALPATH)
-		get_filename_component(kit10wow_dir "[HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows Kits\\Installed Roots;KitsRoot10]" REALPATH)
-		file(GLOB kit10_list ${kit10_dir}/bin/10.* ${kit10wow_dir}/bin/10.*)
-		if(X64)
-			set(sdk_bindir "${sdk_dir}/bin/x64")
-			set(kit_bindir "${kit_dir}/bin/x64")
-			set(kit81_bindir "${kit81_dir}/bin/x64")
-			foreach(tmp_elem ${kit10_list})
-				if(IS_DIRECTORY ${tmp_elem})
-			list(APPEND kit10_bindir "${tmp_elem}/x64")
-				endif()
-			endforeach()
-		else(X64)
-			set(sdk_bindir "${sdk_dir}/bin")
-			set(kit_bindir "${kit_dir}/bin/x86")
-			set(kit81_bindir "${kit81_dir}/bin/x86")
-			foreach(tmp_elem ${kit10_list})
-				if(IS_DIRECTORY ${tmp_elem})
-			list(APPEND kit10_bindir "${tmp_elem}/x86")
-				endif()
-			endforeach()
-		endif(X64)
-	endif()
-	find_program(CMAKE_MC_COMPILER mc.exe HINTS "${sdk_bindir}" "${kit_bindir}" "${kit81_bindir}" ${kit10_bindir}
-		DOC "path to message compiler")
-	if(NOT CMAKE_MC_COMPILER)
-		message(FATAL_ERROR "message compiler not found: required to build")
-	endif(NOT CMAKE_MC_COMPILER)
-	message(STATUS "Found message compiler: ${CMAKE_MC_COMPILER}")
-	mark_as_advanced(CMAKE_MC_COMPILER)
+    # cmake has CMAKE_RC_COMPILER, but no message compiler
+    if("${CMAKE_GENERATOR}" MATCHES "Visual Studio")
+        # this path is only present for 2008+, but we currently require PATH to
+        # be set up anyway
+        get_filename_component(sdk_dir "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows;CurrentInstallFolder]" REALPATH)
+        get_filename_component(kit_dir "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows Kits\\Installed Roots;KitsRoot]" REALPATH)
+        get_filename_component(kit81_dir "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows Kits\\Installed Roots;KitsRoot81]" REALPATH)
+        get_filename_component(kit10_dir "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows Kits\\Installed Roots;KitsRoot10]" REALPATH)
+        get_filename_component(kit10wow_dir "[HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows Kits\\Installed Roots;KitsRoot10]" REALPATH)
+        file(GLOB kit10_list ${kit10_dir}/bin/10.* ${kit10wow_dir}/bin/10.*)
+        if(X64)
+            set(sdk_bindir "${sdk_dir}/bin/x64")
+            set(kit_bindir "${kit_dir}/bin/x64")
+            set(kit81_bindir "${kit81_dir}/bin/x64")
+            foreach(tmp_elem ${kit10_list})
+                if(IS_DIRECTORY ${tmp_elem})
+            list(APPEND kit10_bindir "${tmp_elem}/x64")
+                endif()
+            endforeach()
+        else(X64)
+            set(sdk_bindir "${sdk_dir}/bin")
+            set(kit_bindir "${kit_dir}/bin/x86")
+            set(kit81_bindir "${kit81_dir}/bin/x86")
+            foreach(tmp_elem ${kit10_list})
+                if(IS_DIRECTORY ${tmp_elem})
+            list(APPEND kit10_bindir "${tmp_elem}/x86")
+                endif()
+            endforeach()
+        endif(X64)
+    endif()
+    find_program(CMAKE_MC_COMPILER mc.exe HINTS "${sdk_bindir}" "${kit_bindir}" "${kit81_bindir}" ${kit10_bindir}
+        DOC "path to message compiler")
+    if(NOT CMAKE_MC_COMPILER)
+        message(FATAL_ERROR "message compiler not found: required to build")
+    endif(NOT CMAKE_MC_COMPILER)
+    message(STATUS "Found message compiler: ${CMAKE_MC_COMPILER}")
+    mark_as_advanced(CMAKE_MC_COMPILER)
 endif(WIN32)
 
 #===============================================================================
@@ -205,35 +205,35 @@ endmacro()
 macro(POCO_GENERATE_PACKAGE target_name)
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
-	"${CMAKE_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}${target_name}ConfigVersion.cmake"
-	VERSION ${PROJECT_VERSION}
-	COMPATIBILITY AnyNewerVersion
+    "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}${target_name}ConfigVersion.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY AnyNewerVersion
 )
 if("${CMAKE_VERSION}" VERSION_LESS "3.0.0")
-	if(NOT EXISTS "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}${target_name}Targets.cmake")
-		export(TARGETS "${target_name}" APPEND
-			FILE "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}${target_name}Targets.cmake"
-			NAMESPACE "${PROJECT_NAME}::"
-    	)
+    if(NOT EXISTS "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}${target_name}Targets.cmake")
+        export(TARGETS "${target_name}" APPEND
+            FILE "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}${target_name}Targets.cmake"
+            NAMESPACE "${PROJECT_NAME}::"
+        )
     endif()
 else()
-	export(EXPORT "${target_name}Targets"
-		FILE "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}${target_name}Targets.cmake"
-		NAMESPACE "${PROJECT_NAME}::"
+    export(EXPORT "${target_name}Targets"
+        FILE "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}${target_name}Targets.cmake"
+        NAMESPACE "${PROJECT_NAME}::"
     )
 endif()
 configure_file("cmake/Poco${target_name}Config.cmake"
-	"${CMAKE_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}${target_name}Config.cmake"
-	@ONLY
+    "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}${target_name}Config.cmake"
+    @ONLY
 )
 
 # Set config script install location in a location that find_package() will
 # look for, which is different on MS Windows than for UNIX
 # Note: also set in root CMakeLists.txt
 if(WIN32)
-	set(PocoConfigPackageLocation "cmake")
+    set(PocoConfigPackageLocation "cmake")
 else()
-	set(PocoConfigPackageLocation "lib${LIB_SUFFIX}/cmake/${PROJECT_NAME}")
+    set(PocoConfigPackageLocation "lib${LIB_SUFFIX}/cmake/${PROJECT_NAME}")
 endif()
 
 install(
@@ -279,7 +279,7 @@ install(
 
 if(MSVC)
 # install the targets pdb
-	POCO_INSTALL_PDB(${target_name})
+    POCO_INSTALL_PDB(${target_name})
 endif()
 
 endmacro()
@@ -300,5 +300,5 @@ macro(POCO_INSTALL_PDB target_name)
             COMPONENT Devel
             OPTIONAL
         )
-	endif()
+    endif()
 endmacro()

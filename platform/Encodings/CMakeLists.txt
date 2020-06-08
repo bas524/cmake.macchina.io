@@ -8,31 +8,31 @@ POCO_HEADERS(SRCS Encodings ${HDRS_G})
 
 # Version Resource
 if(MSVC AND BUILD_SHARED_LIBS)
-	source_group("Resources" FILES ${POCO_BASE}/DLLVersion.rc)
-	list(APPEND SRCS ${POCO_BASE}/DLLVersion.rc)
+    source_group("Resources" FILES ${POCO_BASE}/DLLVersion.rc)
+    list(APPEND SRCS ${POCO_BASE}/DLLVersion.rc)
 endif()
 
 add_library(Encodings ${SRCS})
 add_library(Poco::Encodings ALIAS Encodings)
 set_target_properties(Encodings
-	PROPERTIES
-	VERSION ${SHARED_LIBRARY_VERSION} SOVERSION ${SHARED_LIBRARY_VERSION}
-	OUTPUT_NAME PocoEncodings
-	DEFINE_SYMBOL Encodings_EXPORTS
+    PROPERTIES
+    VERSION ${SHARED_LIBRARY_VERSION} SOVERSION ${SHARED_LIBRARY_VERSION}
+    OUTPUT_NAME PocoEncodings
+    DEFINE_SYMBOL Encodings_EXPORTS
 )
 
 target_link_libraries(Encodings PUBLIC Poco::Foundation)
 target_include_directories(Encodings
-	PUBLIC
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-		$<INSTALL_INTERFACE:include>
-	PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
 POCO_INSTALL(Encodings)
 POCO_GENERATE_PACKAGE(Encodings)
 
 if(ENABLE_TESTS)
-	add_subdirectory(samples)
-	add_subdirectory(testsuite)
+    add_subdirectory(samples)
+    add_subdirectory(testsuite)
 endif()

@@ -1,3 +1,5 @@
+set(SRCS "")
+
 # Sources
 file(GLOB SRCS_G "src/*.cpp")
 POCO_SOURCES_AUTO(SRCS ${SRCS_G})
@@ -8,36 +10,36 @@ POCO_HEADERS_AUTO(SRCS ${HDRS_G})
 
 # Version Resource
 if(MSVC AND BUILD_SHARED_LIBS)
-	source_group("Resources" FILES ${POCO_BASE}/DLLVersion.rc)
-	list(APPEND SRCS ${POCO_BASE}/DLLVersion.rc)
+    source_group("Resources" FILES ${POCO_BASE}/DLLVersion.rc)
+    list(APPEND SRCS ${POCO_BASE}/DLLVersion.rc)
 endif()
 
 add_library(NetSSL ${SRCS})
 add_library(Poco::NetSSL ALIAS NetSSL)
 set_target_properties(NetSSL
-	PROPERTIES
-	VERSION ${SHARED_LIBRARY_VERSION} SOVERSION ${SHARED_LIBRARY_VERSION}
-	OUTPUT_NAME PocoNetSSL
-	DEFINE_SYMBOL NetSSL_EXPORTS
+    PROPERTIES
+    VERSION ${SHARED_LIBRARY_VERSION} SOVERSION ${SHARED_LIBRARY_VERSION}
+    OUTPUT_NAME PocoNetSSL
+    DEFINE_SYMBOL NetSSL_EXPORTS
 )
 
 target_link_libraries(NetSSL PUBLIC Poco::Crypto Poco::Util Poco::Net)
 target_include_directories(NetSSL
-	PUBLIC
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-		$<INSTALL_INTERFACE:include>
-	PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
 if(MSVC AND POCO_DISABLE_INTERNAL_OPENSSL AND OPENSSL_USE_STATIC_LIBS)
-	target_link_libraries(NetSSL PUBLIC ws2_32.lib Crypt32.lib)
+    target_link_libraries(NetSSL PUBLIC ws2_32.lib Crypt32.lib)
 endif()
 
 POCO_INSTALL(NetSSL)
 POCO_GENERATE_PACKAGE(NetSSL)
 
 if(ENABLE_TESTS)
-	add_subdirectory(samples)
-	add_subdirectory(testsuite)
+    add_subdirectory(samples)
+    add_subdirectory(testsuite)
 endif()
 

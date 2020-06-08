@@ -1,4 +1,5 @@
 set(POCO_EXENAME "BundleCreator")
+set(SRCS "")
 
 # Sources
 file(GLOB SRCS_G "src/*.cpp")

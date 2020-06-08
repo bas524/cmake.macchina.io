@@ -1,3 +1,5 @@
+set(SRCS "")
+
 # Sources
 file(GLOB SRCS_G "src/*.cpp")
 POCO_SOURCES_AUTO(SRCS ${SRCS_G})
@@ -8,30 +10,30 @@ POCO_HEADERS_AUTO(SRCS ${HDRS_G})
 
 # Version Resource
 if(MSVC AND BUILD_SHARED_LIBS)
-	source_group("Resources" FILES ${POCO_BASE}/DLLVersion.rc)
-	list(APPEND SRCS ${POCO_BASE}/DLLVersion.rc)
+    source_group("Resources" FILES ${POCO_BASE}/DLLVersion.rc)
+    list(APPEND SRCS ${POCO_BASE}/DLLVersion.rc)
 endif()
 
 add_library(JWT ${SRCS})
 add_library(Poco::JWT ALIAS JWT)
 set_target_properties(JWT
-	PROPERTIES
-	VERSION ${SHARED_LIBRARY_VERSION} SOVERSION ${SHARED_LIBRARY_VERSION}
-	OUTPUT_NAME PocoJWT
-	DEFINE_SYMBOL JWT_EXPORTS
+    PROPERTIES
+    VERSION ${SHARED_LIBRARY_VERSION} SOVERSION ${SHARED_LIBRARY_VERSION}
+    OUTPUT_NAME PocoJWT
+    DEFINE_SYMBOL JWT_EXPORTS
 )
 
 target_link_libraries(JWT PUBLIC Poco::JSON Poco::Crypto)
 target_include_directories(JWT
-	PUBLIC
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-		$<INSTALL_INTERFACE:include>
-	PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
 POCO_INSTALL(JWT)
 POCO_GENERATE_PACKAGE(JWT)
 
 if(ENABLE_TESTS)
-	add_subdirectory(testsuite)
+    add_subdirectory(testsuite)
 endif()

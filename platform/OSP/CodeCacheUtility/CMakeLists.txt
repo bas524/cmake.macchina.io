@@ -1,4 +1,5 @@
 set(POCO_EXENAME "CodeCacheUtility")
+set(SRCS "")
 
 # Sources
 file(GLOB SRCS_G "src/*.cpp")

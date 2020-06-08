@@ -61,4 +61,6 @@ POCO_MAKE_BUNDLE(NAME ${PROJECT_BUNDLE}
                    Poco::Foundation
                  )
 
-add_subdirectory(Legato)
+if (NOT WIN32)
+  add_subdirectory(Legato)
+endif()

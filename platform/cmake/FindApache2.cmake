@@ -21,29 +21,29 @@ find_package(PkgConfig QUIET)
 pkg_check_modules(PC_APACHE2 QUIET apache2)
 
 find_path(APACHE2_INCLUDE_DIR httpd.h
-	HINTS
-		${APACHE2_ROOT_DIR}/include/apache2
-		${APACHE2_ROOT_INCLUDE_DIRS}
-	PATHS
-		${PC_APACHE2_INCLUDE_DIRS}
-		/usr/local/include/apache2
-		/usr/include/apache2
+    HINTS
+        ${APACHE2_ROOT_DIR}/include/apache2
+        ${APACHE2_ROOT_INCLUDE_DIRS}
+    PATHS
+        ${PC_APACHE2_INCLUDE_DIRS}
+        /usr/local/include/apache2
+        /usr/include/apache2
 )
 
 set(APACHE2_VERSION ${PC_APACHE2_VERSION})
 
 find_package_handle_standard_args(Apache2
-	FOUND_VAR APACHE2_FOUND
-	REQUIRED_VARS
-		APACHE2_INCLUDE_DIR
-	VERSION_VAR APACHE2_VERSION
+    FOUND_VAR APACHE2_FOUND
+    REQUIRED_VARS
+        APACHE2_INCLUDE_DIR
+    VERSION_VAR APACHE2_VERSION
 )
 
 if(APACHE2_FOUND)
-	set(APACHE2_INCLUDE_DIRS ${APACHE2_INCLUDE_DIR})
-	set(APACHE2_DEFINITIONS ${PC_APACHE2_CFLAGS_OTHER})
+    set(APACHE2_INCLUDE_DIRS ${APACHE2_INCLUDE_DIR})
+    set(APACHE2_DEFINITIONS ${PC_APACHE2_CFLAGS_OTHER})
 endif()
 
 mark_as_advanced(
-	APACHE2_INCLUDE_DIR
+    APACHE2_INCLUDE_DIR
 )

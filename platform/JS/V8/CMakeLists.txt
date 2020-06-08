@@ -3,8 +3,11 @@
 #
 # CMakefile for v8 JavaScript engine
 #
-
-find_package(Python2 COMPONENTS Interpreter REQUIRED)
+if(CMAKE_VERSION VERSION_LESS "3.13")
+  find_package(PythonInterp 2.7 REQUIRED)
+else()
+  find_package(Python2 COMPONENTS Interpreter REQUIRED)
+endif()
 
 include(ProcessorCount)
 processorcount(N)
@@ -161,9 +164,12 @@ foreach (V8_HDR ${V8_PLATFORM_HEADERS})
   get_filename_component(HDR_NAME ${V8_HDR} NAME)
   file(COPY ${CMAKE_CURRENT_LIST_DIR}/v8/include/libplatform/${HDR_NAME} DESTINATION ${CMAKE_CURRENT_LIST_DIR}/include/libplatform/)
 endforeach ()
+if(NOT PYTHON_DIR)
+  get_filename_component(PYTHON_DIR "${PYTHON_EXECUTABLE}" DIRECTORY)
+endif()
 
 add_custom_target(v8_config
-                  COMMAND ${CMAKE_COMMAND} -E env "PATH=${PYTHON_DIR}${PATH_SEP}$ENV{PATH}" "${Python_EXECUTABLE}" ${CMAKE_CURRENT_LIST_DIR}/tools/gyp/gyp_main.py ${GYPFLAGS} --generator-output="${POCO_BASE}/JS/V8/out" -Goutput_dir="${POCO_BASE}/JS/V8/out" -f ${GYP_GENERATOR} -I"${CMAKE_CURRENT_LIST_DIR}/common.gypi" --depth=. "${CMAKE_CURRENT_LIST_DIR}/v8/src/v8.gyp"
+                  COMMAND ${CMAKE_COMMAND} -E env "PATH=${PYTHON_DIR}${PATH_SEP}$ENV{PATH}" "${PYTHON_EXECUTABLE}" ${CMAKE_CURRENT_LIST_DIR}/tools/gyp/gyp_main.py ${GYPFLAGS} --generator-output="${POCO_BASE}/JS/V8/out" -Goutput_dir="${POCO_BASE}/JS/V8/out" -f ${GYP_GENERATOR} -I"${CMAKE_CURRENT_LIST_DIR}/common.gypi" --depth=. "${CMAKE_CURRENT_LIST_DIR}/v8/src/v8.gyp"
                   WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
                   DEPENDS ${CMAKE_CURRENT_LIST_DIR}/include/v8.h
                   COMMENT "configure V8 with gyp"
@@ -179,22 +185,22 @@ if (MSVC)
                     )
   add_custom_command(TARGET v8
                      POST_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/$<CONFIG>/${v8targetlibdir}v8.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>/v8.dll
+                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/$<CONFIG>/${v8targetlibdir}v8.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/v8.dll
                      POST_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/$<CONFIG>/${v8targetlibdir}v8_libbase.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>/v8_libbase.dll
+                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/$<CONFIG>/${v8targetlibdir}v8_libbase.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/v8_libbase.dll
                      POST_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/$<CONFIG>/${v8targetlibdir}v8_libplatform.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>/v8_libplatform.dll
+                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/$<CONFIG>/${v8targetlibdir}v8_libplatform.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/v8_libplatform.dll
                      POST_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/$<CONFIG>/${v8targetlibdir}v8.dll.lib ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/$<CONFIG>/v8.dll.lib
+                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/$<CONFIG>/${v8targetlibdir}v8.dll.lib ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/v8.dll.lib
                      POST_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/$<CONFIG>/${v8targetlibdir}v8_libbase.dll.lib ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/$<CONFIG>/v8_libbase.dll.lib
+                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/$<CONFIG>/${v8targetlibdir}v8_libbase.dll.lib ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/v8_libbase.dll.lib
                      POST_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/$<CONFIG>/${v8targetlibdir}v8_libplatform.dll.lib ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/$<CONFIG>/v8_libplatform.dll.lib
+                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/$<CONFIG>/${v8targetlibdir}v8_libplatform.dll.lib ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/v8_libplatform.dll.lib
                      COMMENT "Copy V8 libraries to ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}"
                      )
-  set(LIB_V8_LOCATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/$<CONFIG>/v8.dll.lib)
-  set(LIB_V8BASE_LOCATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/$<CONFIG>/v8_libbase.dll.lib)
-  set(LIB_V8PLATFORM_LOCATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/$<CONFIG>/v8_libplatform.dll.lib)
+  set(LIB_V8_LOCATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/v8.dll.lib)
+  set(LIB_V8BASE_LOCATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/v8_libbase.dll.lib)
+  set(LIB_V8PLATFORM_LOCATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/v8_libplatform.dll.lib)
 else ()
   set(EXT_C_FLAGS -fpic)
   list(APPEND EXT_C_FLAGS "-DV8_DEPRECATION_WARNINGS=1")
@@ -214,19 +220,27 @@ else ()
       list(APPEND EXT_CXX_FLAGS -Wno-unused-function)
   endif()
 
+  set(GYP_BUILD_TYPE ${CMAKE_BUILD_TYPE})
+  if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+    set(GYP_BUILD_TYPE "Release")
+  endif()
+  if (CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
+    set(GYP_BUILD_TYPE "Release")
+  endif()
+  
   add_custom_target(v8 ALL
-                    COMMAND ${GYP_GENERATOR} -j${N} -C ${CMAKE_CURRENT_LIST_DIR}/out BUILDTYPE=${CMAKE_BUILD_TYPE} CFLAGS="${EXT_C_FLAGS}" CXXFLAGS="${EXT_CXX_FLAGS}" v8 v8_libplatform
+                    COMMAND ${GYP_GENERATOR} -j${N} -C ${CMAKE_CURRENT_LIST_DIR}/out BUILDTYPE=${GYP_BUILD_TYPE} CFLAGS="${EXT_C_FLAGS}" CXXFLAGS="${EXT_CXX_FLAGS}" v8 v8_libplatform
                     WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
                     DEPENDS v8_config
                     COMMENT "build V8"
                     )
   add_custom_command(TARGET v8
                      POST_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/${CMAKE_BUILD_TYPE}/${v8targetlibdir}libv8${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/${GYP_BUILD_TYPE}/${v8targetlibdir}libv8${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
                      POST_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/${CMAKE_BUILD_TYPE}/${v8targetlibdir}libv8_libbase${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/${GYP_BUILD_TYPE}/${v8targetlibdir}libv8_libbase${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
                      POST_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/${CMAKE_BUILD_TYPE}/${v8targetlibdir}libv8_libplatform${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/${GYP_BUILD_TYPE}/${v8targetlibdir}libv8_libplatform${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
                      COMMENT "Copy V8 libraries to ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}"
                      )
   set(LIB_V8_LOCATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libv8${CMAKE_SHARED_LIBRARY_SUFFIX})
@@ -241,16 +255,19 @@ add_dependencies(libv8 v8)
 add_library(js::libv8 ALIAS libv8)
 set_target_properties(libv8 PROPERTIES
                       IMPORTED_LOCATION "${LIB_V8_LOCATION}"
+                      IMPORTED_IMPLIB "${LIB_V8_LOCATION}"
                       INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}/include")
 
 add_library(libv8_libbase SHARED IMPORTED GLOBAL)
 add_library(js::libv8_libbase ALIAS libv8_libbase)
 set_target_properties(libv8_libbase PROPERTIES
                       IMPORTED_LOCATION "${LIB_V8BASE_LOCATION}"
+                      IMPORTED_IMPLIB "${LIB_V8BASE_LOCATION}"
                       INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}/include")
 
 add_library(libv8_libplatform SHARED IMPORTED GLOBAL)
 add_library(js::libv8_libplatform ALIAS libv8_libplatform)
 set_target_properties(libv8_libplatform PROPERTIES
                       IMPORTED_LOCATION "${LIB_V8PLATFORM_LOCATION}"
+                      IMPORTED_IMPLIB "${LIB_V8PLATFORM_LOCATION}"
                       INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}/include")
