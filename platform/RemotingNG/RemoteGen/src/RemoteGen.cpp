@@ -88,6 +88,7 @@ public:
 	  _helpRequested(false),
 	  _noGlobalConfig(false),
 	  _enableOSP(false),
+      _logFiles(false),
 	  _bundlePath("bundle"),
 	  _enableTimestamps(true)
 	{
@@ -189,8 +190,13 @@ protected:
 				.required(false)
 				.repeatable(false)
 				.callback(OptionCallback<RemoteGenApp>(this, &RemoteGenApp::handleNoGlobal)));
-	}
 
+        options.addOption(
+                Option("logfiles", "l", "Only log generated files path.")
+                        .required(false)
+                        .repeatable(false)
+                        .callback(OptionCallback<RemoteGenApp>(this, &RemoteGenApp::handleLogFiles)));
+	}
 	void handleConfig(const std::string& name, const std::string& value)
 	{
 		loadConfiguration(value);
@@ -205,6 +211,11 @@ protected:
 	{
 		_noGlobalConfig = true;
 	}
+
+    void handleLogFiles(const std::string& name, const std::string& value)
+    {
+        _logFiles = true;
+    }
 
 	void handleDefine(const std::string& name, const std::string& value)
 	{
@@ -617,6 +628,12 @@ protected:
 
 	void generateInterface(const Poco::CppParser::Struct* pStruct, const Poco::Path& incPath, const Poco::Path& srcPath, const std::string& defaultNameSpace, const std::string& libraryName, bool usePocoIncludeStyle, const std::string& copyright, bool enableOSP)
 	{
+        if (_logFiles)
+        {
+            logFiles(incPath, srcPath, InterfaceGenerator::generateClassName(pStruct));
+            return;
+        }
+
 		std::ofstream hOut;
 		std::ofstream cppOut;
 		openFiles(incPath, srcPath, InterfaceGenerator::generateClassName(pStruct), hOut, cppOut);
@@ -638,6 +655,12 @@ protected:
 		implPath.makeDirectory();
 		implPath.setBaseName(_bundleActivator + "Impl");
 		implPath.setExtension(CPP_EXT);
+        if (_logFiles)
+        {
+            logFiles(incPath, srcPath, _bundleActivator);
+            std::cout << implPath.toString() << std::endl;
+            return;
+        }
 		std::ofstream hOut;
 		std::ofstream cppOut;
 		std::ofstream implOut;
@@ -692,10 +715,21 @@ protected:
 
 	bool generateRemoteObject(const Poco::CppParser::Struct* pStruct, const Poco::Path& incPath, const Poco::Path& srcPath, const std::string& defaultNameSpace, const std::string& libraryName, bool usePocoIncludeStyle, const std::string& copyright)
 	{
-		std::ofstream hOut;
-		std::ofstream cppOut;
-		openFiles(incPath, srcPath, RemoteObjectGenerator::generateClassName(pStruct), hOut, cppOut);
-		Poco::CodeGeneration::CppGenerator cppGen(defaultNameSpace, libraryName, usePocoIncludeStyle, copyright, hOut, cppOut);
+        if (_logFiles)
+        {
+            logFiles(incPath, srcPath, RemoteObjectGenerator::generateClassName(pStruct));
+        }
+
+        Poco::NullOutputStream nullOutputStream;
+        std::ofstream hOut;
+        std::ofstream cppOut;
+        if (!_logFiles)
+        {
+            openFiles(incPath, srcPath, RemoteObjectGenerator::generateClassName(pStruct), hOut, cppOut);
+        }
+		Poco::CodeGeneration::CppGenerator cppGen(defaultNameSpace, libraryName, usePocoIncludeStyle, copyright,
+		        _logFiles ? nullOutputStream : static_cast<std::ostream&>(hOut),
+		           _logFiles ? nullOutputStream : static_cast<std::ostream&>(cppOut));
 		cppGen.enableTimestamps(_enableTimestamps);
 		RemoteObjectGenerator* pGen = new RemoteObjectGenerator(cppGen);
 		Poco::CodeGeneration::MethodPropertyFilter mi(pGen, Poco::CodeGeneration::Utility::REMOTE);
@@ -710,6 +744,12 @@ protected:
 
 	void generateEventDispatcher(const Poco::CppParser::Struct* pStruct, const Poco::Path& incPath, const Poco::Path& srcPath, const std::string& defaultNameSpace, const std::string& libraryName, bool usePocoIncludeStyle, const std::string& copyright)
 	{
+        if (_logFiles)
+        {
+            logFiles(incPath, srcPath, EventDispatcherGenerator::generateClassName(pStruct));
+            return;
+        }
+
 		std::ofstream hOut;
 		std::ofstream cppOut;
 		openFiles(incPath, srcPath, EventDispatcherGenerator::generateClassName(pStruct), hOut, cppOut);
@@ -727,6 +767,12 @@ protected:
 
 	void generateEventSubscriber(const Poco::CppParser::Struct* pStruct, const Poco::Path& incPath, const Poco::Path& srcPath, const std::string& defaultNameSpace, const std::string& libraryName, bool usePocoIncludeStyle, const std::string& copyright)
 	{
+        if (_logFiles)
+        {
+            logFiles(incPath, srcPath, EventSubscriberGenerator::generateClassName(pStruct));
+            return;
+        }
+
 		std::ofstream hOut;
 		std::ofstream cppOut;
 		openFiles(incPath, srcPath, EventSubscriberGenerator::generateClassName(pStruct), hOut, cppOut);
@@ -744,6 +790,12 @@ protected:
 
 	void generateProxy(const Poco::CppParser::Struct* pStruct, const Poco::Path& incPath, const Poco::Path& srcPath, const std::string& defaultNameSpace, const std::string& libraryName, bool usePocoIncludeStyle, const std::string& copyright)
 	{
+        if (_logFiles)
+        {
+            logFiles(incPath, srcPath, ProxyGenerator::generateClassName(pStruct));
+            return;
+        }
+
 		std::ofstream hOut;
 		std::ofstream cppOut;
 		openFiles(incPath, srcPath, ProxyGenerator::generateClassName(pStruct), hOut, cppOut);
@@ -761,6 +813,12 @@ protected:
 
 	void generateProxyFactory(const Poco::CppParser::Struct* pStruct, const Poco::Path& incPath, const Poco::Path& srcPath, const std::string& defaultNameSpace, const std::string& libraryName, bool usePocoIncludeStyle, const std::string& copyright)
 	{
+        if (_logFiles)
+        {
+            logFiles(incPath, srcPath, ProxyFactoryGenerator::generateClassName(pStruct));
+            return;
+        }
+
 		std::ofstream hOut;
 		std::ofstream cppOut;
 		openFiles(incPath, srcPath, ProxyFactoryGenerator::generateClassName(pStruct), hOut, cppOut);
@@ -778,6 +836,12 @@ protected:
 
 	void generateSkeleton(const Poco::CppParser::Struct* pStruct, const Poco::Path& incPath, const Poco::Path& srcPath, const std::string& defaultNameSpace, const std::string& libraryName, bool usePocoIncludeStyle, const std::string& copyright)
 	{
+        if (_logFiles)
+        {
+            logFiles(incPath, srcPath, SkeletonGenerator::generateClassName(pStruct));
+            return;
+        }
+
 		std::ofstream hOut;
 		std::ofstream cppOut;
 		openFiles(incPath, srcPath, SkeletonGenerator::generateClassName(pStruct), hOut, cppOut);
@@ -795,6 +859,12 @@ protected:
 
 	void generateClientHelper(const Poco::CppParser::Struct* pStruct, const Poco::Path& incPath, const Poco::Path& srcPath, const std::string& defaultNameSpace, const std::string& libraryName, bool usePocoIncludeStyle, const std::string& copyright)
 	{
+        if (_logFiles)
+        {
+            logFiles(incPath, srcPath, ClientHelperGenerator::generateClassName(pStruct));
+            return;
+        }
+
 		std::ofstream hOut;
 		std::ofstream cppOut;
 		openFiles(incPath, srcPath, ClientHelperGenerator::generateClassName(pStruct), hOut, cppOut);
@@ -812,6 +882,12 @@ protected:
 
 	void generateServerHelper(const Poco::CppParser::Struct* pStruct, const Poco::Path& incPath, const Poco::Path& srcPath, const std::string& defaultNameSpace, const std::string& libraryName, bool usePocoIncludeStyle, const std::string& copyright)
 	{
+        if (_logFiles)
+        {
+            logFiles(incPath, srcPath, ServerHelperGenerator::generateClassName(pStruct));
+            return;
+        }
+
 		std::ofstream hOut;
 		std::ofstream cppOut;
 		openFiles(incPath, srcPath, ServerHelperGenerator::generateClassName(pStruct), hOut, cppOut);
@@ -829,6 +905,12 @@ protected:
 
 	void generateSerializer(const Poco::CppParser::Struct* pStruct, const Poco::Path& incPath, bool usePocoIncludeStyle, const std::string& copyright)
 	{
+        if (_logFiles)
+        {
+            logTemplateFiles(incPath, SerializerGenerator::generateClassName(pStruct));
+            return;
+        }
+
 		std::ofstream hOut;
 		Poco::NullOutputStream cppOut;
 		openTemplateFiles(incPath, SerializerGenerator::generateClassName(pStruct), hOut);
@@ -844,6 +926,12 @@ protected:
 
 	void generateDeserializer(const Poco::CppParser::Struct* pStruct, const Poco::Path& incPath, bool usePocoIncludeStyle, const std::string& copyright)
 	{
+	    if (_logFiles)
+        {
+	        logTemplateFiles(incPath, DeserializerGenerator::generateClassName(pStruct));
+	        return;
+        }
+
 		std::ofstream hOut;
 		Poco::NullOutputStream cppOut;
 		openTemplateFiles(incPath, DeserializerGenerator::generateClassName(pStruct), hOut);
@@ -902,6 +990,21 @@ protected:
 		wsdlOut.close();
 	}
 
+    void logFiles(const Poco::Path& incPath, const Poco::Path& srcPath, const std::string& baseName)
+    {
+        Poco::Path hPath(incPath);
+		hPath.makeDirectory();
+		hPath.setBaseName(baseName);
+        hPath.setExtension(H_EXT);
+        std::cout << hPath.toString() << std::endl;
+
+        Poco::Path cppPath(srcPath);
+		cppPath.makeDirectory();
+		cppPath.setBaseName(baseName);
+		cppPath.setExtension(CPP_EXT);
+        std::cout << cppPath.toString() << std::endl;
+    }
+
 	void openFiles(const Poco::Path& incPath, const Poco::Path& srcPath, const std::string& baseName, std::ofstream& hOut, std::ofstream& cppOut)
 	{
 		Poco::Path hPath(incPath);
@@ -927,6 +1030,15 @@ protected:
 		else
 			throw Poco::FileException("Failed to create file " + hPath.toString() + ". Please make sure the file is writable.");
 	}
+
+	void logTemplateFiles(const Poco::Path& path, const std::string& baseName)
+    {
+        Poco::Path hPath(path);
+        hPath.makeDirectory();
+        hPath.setBaseName(baseName);
+        hPath.setExtension(H_EXT);
+        std::cout << hPath.toString() << std::endl;
+    }
 
 	void openTemplateFiles(const Poco::Path& path, const std::string& baseName, std::ofstream& hOut)
 	{
@@ -988,6 +1100,7 @@ private:
 	bool _helpRequested;
 	bool _noGlobalConfig;
 	bool _enableOSP;
+    bool _logFiles;
 	std::string _compiler;
 	std::string _bundleActivator;
 	std::string _bundlePath;
