@@ -7,7 +7,7 @@ if (!session || !session.authenticated)
 }
 
 var processes = {
-    list: system.exec(system.osName == "Darwin" ? "top -l 1" : "top -b -n1")
+    list: system.exec(system.osName == "Darwin" ? "top -l 1" : (system.osName == "Linux" ? "top -b -n1" : "CHCP 65001 && tasklist"))
 };
 
 response.contentType = 'application/json';

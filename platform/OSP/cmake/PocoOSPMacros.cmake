@@ -175,6 +175,10 @@ function(POCO_MAKE_BUNDLE_LIBRARY)
     source_group("Resources" FILES ${POCO_BASE}/DLLVersion.rc)
     list(APPEND BNDL_SRCS ${POCO_BASE}/DLLVersion.rc)
   endif()
+
+  string(REPLACE "." "_" LIB_EXPORT_NAME ${PARSED_ARGS_NAME})
+  string(REPLACE "-" "_" LIB_EXPORT_NAME ${LIB_EXPORT_NAME})
+
   if (PARSED_ARGS_GENERATE_REMOTING)
     if (MSVC)
       set(COMPILER_ID msvc)
@@ -194,7 +198,7 @@ function(POCO_MAKE_BUNDLE_LIBRARY)
         #TODO : for not server mode source list should be extend
         set(HAS_REMOTE "")
         file(STRINGS ${HDR} HAS_REMOTE REGEX "\\/\\/\\s*@\\s* remote\\s*")
-        file(STRINGS ${HDR} HAS_BASIC_EVENT REGEX "Poco\\:\\:BasicEvent\\<.*\\>\\s*")
+        file(STRINGS ${HDR} HAS_BASIC_EVENT REGEX "Poco\\:\\:(BasicEvent|FifoEvent)\\<.*\\>\\s*")
         file(STRINGS ${HDR} HAS_PARENT_DEVICE REGEX "class\\s*[a-zA-Z0-9_ ]*\\:\\s*[a-zA-Z0-9_]*\\s*[a-zA-Z0-9_]*")
         if (HAS_REMOTE)
           list(APPEND GENERATED_SOURCES ${PARSED_ARGS_REMGEN_SRC_PATH}/I${HDR_NAME}.cpp)
@@ -281,6 +285,9 @@ function(POCO_MAKE_BUNDLE_LIBRARY)
     else()
       set(_out_flat_include_enable "false")
     endif()
+
+    set(_out_export_name "${LIB_EXPORT_NAME}")
+
     message(STATUS "Generate ${PARSED_ARGS_GENERATE_REMOTING}")
     configure_file(${POCO_BASE}/OSP/cmake/RemoteGen.xml.in ${PARSED_ARGS_GENERATE_REMOTING})
 
@@ -303,8 +310,7 @@ function(POCO_MAKE_BUNDLE_LIBRARY)
 
   add_library(${PARSED_ARGS_NAME} ${BNDL_SRCS})
   add_library(Poco::OSP${PARSED_ARGS_NAME} ALIAS ${PARSED_ARGS_NAME})
-  string(REPLACE "." "_" LIB_EXPORT_NAME ${PARSED_ARGS_NAME})
-  string(REPLACE "-" "_" LIB_EXPORT_NAME ${LIB_EXPORT_NAME})
+
   set_target_properties(${PARSED_ARGS_NAME}
                         PROPERTIES
                         SOVERSION ${PARSED_ARGS_VERSION}

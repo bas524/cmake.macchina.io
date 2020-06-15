@@ -7,7 +7,7 @@ if (!session || !session.authenticated)
 }
 
 var memory = {
-    stats: system.exec(system.osName == "Darwin" ? "memory_pressure" : "free")
+    stats: system.exec(system.osName == "Darwin" ? "memory_pressure" : (system.osName == "Linux" ? "free" : "wmic OS get FreePhysicalMemory,FreeVirtualMemory,FreeSpaceInPagingFiles /VALUE"))
 };
 
 response.contentType = 'application/json';

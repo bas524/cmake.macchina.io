@@ -28,7 +28,7 @@ namespace NetworkEnvironment {
 class NetworkMonitorThread;
 
 
-class IoTNetworkEnvironment_API NetworkEnvironmentServiceImpl: public NetworkEnvironmentService
+class NetworkEnvironmentServiceImpl: public NetworkEnvironmentService
 	/// Implementation of the NetworkEnvironmentService interface.
 {
 public:

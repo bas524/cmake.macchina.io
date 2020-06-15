@@ -31,13 +31,13 @@ namespace IoT {
 namespace MQTT {
 
 
-class IoTMQTT_API MQTTClientImpl: public IoT::MQTT::MQTTClient
+class MQTTClientImpl: public IoT::MQTT::MQTTClient
 	/// The default implementation of MQTTClient based on paho.
 {
 public:
 	using Ptr = Poco::SharedPtr<MQTTClientImpl>;
 
-	struct IoTMQTT_API ConnectOptions
+	struct ConnectOptions
 	{
 		ConnectOptions():
 			keepAliveInterval(60),

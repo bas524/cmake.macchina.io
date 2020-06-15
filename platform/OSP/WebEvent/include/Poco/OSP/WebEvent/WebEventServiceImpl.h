@@ -37,7 +37,7 @@ namespace OSP {
 namespace WebEvent {
 
 
-class OSPWebEvent_API WebEventServiceImpl: public WebEventService
+class WebEventServiceImpl: public WebEventService
 {
 public:
 	using Ptr = Poco::AutoPtr<WebEventServiceImpl>;

@@ -37,7 +37,7 @@ namespace BtLE {
 namespace BlueZ {
 
 
-class IoTBtLE_API BlueZGATTClient: public GATTClient, public Poco::Runnable
+class BlueZGATTClient: public GATTClient, public Poco::Runnable
 	/// An implementation of the GATTClient interface using the BlueZ Linux
 	/// Bluetooth stack via an external helper executable.
 	///

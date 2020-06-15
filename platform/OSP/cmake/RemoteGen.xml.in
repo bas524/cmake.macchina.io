@@ -20,6 +20,7 @@
 			<timestamps>${_out_timestamps_enable}</timestamps>
 			<includeRoot>${_out_include_root_path}</includeRoot>
 			<flatIncludes>${_out_flat_include_enable}</flatIncludes>
+			<library>${_out_export_name}</library>
 		</output>
 	</RemoteGen>
 </AppConfig>

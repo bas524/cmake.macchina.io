@@ -30,7 +30,7 @@ namespace OSP {
 namespace WebEvent {
 
 
-class OSPWebEvent_API WebEventRequestHandler: public Poco::Net::HTTPRequestHandler
+class WebEventRequestHandler: public Poco::Net::HTTPRequestHandler
 	/// This class handles an incoming WebSocket upgrade request, 
 	/// as well as the SUBSCRIBE message. Once the WebSocket connection
 	/// has been established and the SUBSCRIBE request has been handled,

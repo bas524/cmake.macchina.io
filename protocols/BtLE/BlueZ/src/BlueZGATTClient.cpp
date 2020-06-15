@@ -554,7 +554,7 @@ void BlueZGATTClient::processResponse(const std::string& response)
 		}
 		else if (state == "conn")
 		{
-			_mtu = decodeWord(pResponse->get("mtu"));
+			_mtu = static_cast<Poco::UInt8>(decodeWord(pResponse->get("mtu")));
 			std::string sec = decodeValue(pResponse->get("sec"));
 			if (sec == "low")
 				_securityLevel = GATT_SECURITY_LOW;

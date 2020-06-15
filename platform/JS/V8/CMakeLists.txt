@@ -175,27 +175,34 @@ add_custom_target(v8_config
                   COMMENT "configure V8 with gyp"
                   )
 
+set(GYP_BUILD_TYPE ${CMAKE_BUILD_TYPE})
+if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+  set(GYP_BUILD_TYPE "Release")
+endif()
+if (CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
+  set(GYP_BUILD_TYPE "Release")
+endif()
 
 if (MSVC)
   add_custom_target(v8 ALL
-                    COMMAND ${GYP_GENERATOR}.exe -j${N} -C ${CMAKE_CURRENT_LIST_DIR}/out/$<CONFIG> v8 v8_libplatform
+                    COMMAND ${GYP_GENERATOR}.exe -j${N} -C ${CMAKE_CURRENT_LIST_DIR}/out/${GYP_BUILD_TYPE} v8 v8_libplatform
                     WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
                     DEPENDS v8_config
                     COMMENT "build V8"
                     )
   add_custom_command(TARGET v8
                      POST_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/$<CONFIG>/${v8targetlibdir}v8.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/v8.dll
+                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/${GYP_BUILD_TYPE}/${v8targetlibdir}v8.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/v8.dll
                      POST_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/$<CONFIG>/${v8targetlibdir}v8_libbase.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/v8_libbase.dll
+                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/${GYP_BUILD_TYPE}/${v8targetlibdir}v8_libbase.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/v8_libbase.dll
                      POST_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/$<CONFIG>/${v8targetlibdir}v8_libplatform.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/v8_libplatform.dll
+                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/${GYP_BUILD_TYPE}/${v8targetlibdir}v8_libplatform.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/v8_libplatform.dll
                      POST_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/$<CONFIG>/${v8targetlibdir}v8.dll.lib ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/v8.dll.lib
+                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/${GYP_BUILD_TYPE}/${v8targetlibdir}v8.dll.lib ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/v8.dll.lib
                      POST_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/$<CONFIG>/${v8targetlibdir}v8_libbase.dll.lib ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/v8_libbase.dll.lib
+                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/${GYP_BUILD_TYPE}/${v8targetlibdir}v8_libbase.dll.lib ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/v8_libbase.dll.lib
                      POST_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/$<CONFIG>/${v8targetlibdir}v8_libplatform.dll.lib ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/v8_libplatform.dll.lib
+                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/${GYP_BUILD_TYPE}/${v8targetlibdir}v8_libplatform.dll.lib ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/v8_libplatform.dll.lib
                      COMMENT "Copy V8 libraries to ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}"
                      )
   set(LIB_V8_LOCATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/v8.dll.lib)
@@ -218,14 +225,6 @@ else ()
       list(APPEND EXT_CXX_FLAGS -Wno-deprecated-declarations)
       list(APPEND EXT_CXX_FLAGS -Wno-unused-but-set-parameter)
       list(APPEND EXT_CXX_FLAGS -Wno-unused-function)
-  endif()
-
-  set(GYP_BUILD_TYPE ${CMAKE_BUILD_TYPE})
-  if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-    set(GYP_BUILD_TYPE "Release")
-  endif()
-  if (CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
-    set(GYP_BUILD_TYPE "Release")
   endif()
   
   add_custom_target(v8 ALL
