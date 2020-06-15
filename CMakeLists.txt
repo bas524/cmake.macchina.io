@@ -35,6 +35,27 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO  ${CMAKE_BINARY_DIR}/bin)
 set(MACCHINA_BASE ${CMAKE_SOURCE_DIR})
 set(POCO_BASE ${CMAKE_SOURCE_DIR}/platform)
 
+option(USE_DELIVERY "Use binary delivery" OFF)
+
+if (USE_DELIVERY)
+  find_program(AIR_CLI air-cli)
+  set(DELIVERY_ROOT ${CMAKE_CURRENT_LIST_DIR}/.delivery)
+  set(DELIVERY_FILE ${CMAKE_CURRENT_LIST_DIR}/delivery.txt.in)
+  set(DELIVERY_VERSION "6.0.1520.0")
+  set(DELIVERY_EXTENSION "tar.gz")
+  set(DELIVERY_TOOLCHAIN_ID ${KL_CM_TOOLCHAIN_ID}_release)
+
+  if(MSVC)
+    set(DELIVERY_EXTENSION "zip")
+    if(NOT ${CMAKE_BUILD_TYPE} OR ${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+      set(DELIVERY_TOOLCHAIN_ID ${KL_CM_TOOLCHAIN_ID}_debug)
+    endif()
+  endif()
+
+  include(cmake/delivery.cmake)
+  list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+endif()
+
 if(MSVC)
   add_definitions(-DNOMINMAX)
   add_definitions(-DPOCO_DLL)
@@ -42,7 +63,6 @@ if(MSVC)
 endif()
 
 add_subdirectory(platform)
-
 
 set(BUNDLES_OUTPUT_DIR ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/bundles)
 
