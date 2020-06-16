@@ -32,9 +32,9 @@ set(OPENSSL_PDK_LIBRARIES
         ${OPENSSL_PDK_LIBRARY_SSL_STATIC})
 
 message(STATUS "OPENSSL_PDK_LIBRARIES: ")
-foreach (OPENSSL_PDK_LIBRARY ${OPENSSL_PDK_LIBRARIES})
+foreach(OPENSSL_PDK_LIBRARY ${OPENSSL_PDK_LIBRARIES})
   message(STATUS "openssl_pdk + ${OPENSSL_PDK_LIBRARY}")
-endforeach ()
+endforeach()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(OpenSSL_PDK DEFAULT_MSG OPENSSL_PDK_INCLUDE_DIRS
@@ -43,17 +43,35 @@ find_package_handle_standard_args(OpenSSL_PDK DEFAULT_MSG OPENSSL_PDK_INCLUDE_DI
 
 mark_as_advanced(OPENSSL_PDK_INCLUDE_DIRS OPENSSL_PDK_LIBRARIES)
 
-if (OPENSSL_PDK_FOUND)
-  if (NOT TARGET openssl_pdk::crypto_static)
+if(OPENSSL_PDK_FOUND)
+  if(NOT TARGET openssl_pdk::crypto_static)
     add_library(openssl_pdk::crypto_static UNKNOWN IMPORTED)
     set_target_properties(openssl_pdk::crypto_static PROPERTIES
                           IMPORTED_LOCATION "${OPENSSL_PDK_LIBRARY_CRYPTO_STATIC}"
                           INTERFACE_INCLUDE_DIRECTORIES "${OPENSSL_PDK_INCLUDE_DIRS}")
-  endif ()
-  if (NOT TARGET openssl_pdk::ssl_static)
+    if(WIN32)
+      target_link_libraries(openssl_pdk::crypto_static INTERFACE ws2_32)
+
+      if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+        target_link_options(openssl_pdk::crypto_static INTERFACE "/NODEFAULTLIB:libcmtd.lib")
+      else()
+        target_link_options(openssl_pdk::crypto_static INTERFACE "/NODEFAULTLIB:libcmt.lib")
+      endif()
+    endif()
+  endif()
+  if(NOT TARGET openssl_pdk::ssl_static)
     add_library(openssl_pdk::ssl_static UNKNOWN IMPORTED)
     set_target_properties(openssl_pdk::ssl_static PROPERTIES
                           IMPORTED_LOCATION "${OPENSSL_PDK_LIBRARY_SSL_STATIC}"
                           INTERFACE_INCLUDE_DIRECTORIES "${OPENSSL_PDK_INCLUDE_DIRS}")
-  endif ()
-endif ()
+    if(WIN32)
+      target_link_libraries(openssl_pdk::ssl_static INTERFACE ws2_32)
+
+      if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+        target_link_options(openssl_pdk::ssl_static INTERFACE "/NODEFAULTLIB:libcmtd.lib")
+      else()
+        target_link_options(openssl_pdk::ssl_static INTERFACE "/NODEFAULTLIB:libcmt.lib")
+      endif()
+    endif()
+  endif()
+endif()

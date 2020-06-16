@@ -7,6 +7,7 @@ if(CMAKE_VERSION VERSION_LESS "3.13")
   find_package(PythonInterp 2.7 REQUIRED)
 else()
   find_package(Python2 COMPONENTS Interpreter REQUIRED)
+  set(Python_EXECUTABLE ${Python2_EXECUTABLE})
 endif()
 
 include(ProcessorCount)
@@ -165,11 +166,11 @@ foreach (V8_HDR ${V8_PLATFORM_HEADERS})
   file(COPY ${CMAKE_CURRENT_LIST_DIR}/v8/include/libplatform/${HDR_NAME} DESTINATION ${CMAKE_CURRENT_LIST_DIR}/include/libplatform/)
 endforeach ()
 if(NOT PYTHON_DIR)
-  get_filename_component(PYTHON_DIR "${PYTHON_EXECUTABLE}" DIRECTORY)
+  get_filename_component(PYTHON_DIR "${Python_EXECUTABLE}" DIRECTORY)
 endif()
 
 add_custom_target(v8_config
-                  COMMAND ${CMAKE_COMMAND} -E env "PATH=${PYTHON_DIR}${PATH_SEP}$ENV{PATH}" "${PYTHON_EXECUTABLE}" ${CMAKE_CURRENT_LIST_DIR}/tools/gyp/gyp_main.py ${GYPFLAGS} --generator-output="${POCO_BASE}/JS/V8/out" -Goutput_dir="${POCO_BASE}/JS/V8/out" -f ${GYP_GENERATOR} -I"${CMAKE_CURRENT_LIST_DIR}/common.gypi" --depth=. "${CMAKE_CURRENT_LIST_DIR}/v8/src/v8.gyp"
+                  COMMAND ${CMAKE_COMMAND} -E env "PATH=${PYTHON_DIR}${PATH_SEP}$ENV{PATH}" "${Python_EXECUTABLE}" ${CMAKE_CURRENT_LIST_DIR}/tools/gyp/gyp_main.py ${GYPFLAGS} --generator-output="${POCO_BASE}/JS/V8/out" -Goutput_dir="${POCO_BASE}/JS/V8/out" -f ${GYP_GENERATOR} -I"${CMAKE_CURRENT_LIST_DIR}/common.gypi" --depth=. "${CMAKE_CURRENT_LIST_DIR}/v8/src/v8.gyp"
                   WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
                   DEPENDS ${CMAKE_CURRENT_LIST_DIR}/include/v8.h
                   COMMENT "configure V8 with gyp"
