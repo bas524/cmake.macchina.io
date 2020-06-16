@@ -2,7 +2,9 @@ set(PROJECT_BUNDLE io.macchina.can.socketcan)
 set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_LIST_DIR}/SocketCAN.bndlspec)
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-  add_definitions(-DMACCHINA_HAVE_SOCKETCAN)
+  if (CMAKE_SYSTEM_VERSION VERSION_GREATER_EQUAL "3.7.0")
+    add_definitions(-DMACCHINA_HAVE_SOCKETCAN)
+  endif()
 endif ()
 
 POCO_GENERATE_BUNDLESPEC(
