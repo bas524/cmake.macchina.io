@@ -292,7 +292,6 @@ function(POCO_MAKE_BUNDLE_LIBRARY)
     configure_file(${POCO_BASE}/OSP/cmake/RemoteGen.xml.in ${PARSED_ARGS_GENERATE_REMOTING})
 
     add_custom_command(OUTPUT ${GENERATED_SOURCES}
-                       BYPRODUCTS ${GENERATED_SOURCES}
                        COMMAND $<TARGET_FILE:RemoteGenNG> ${PARAM_PREFIX}compiler=${COMPILER_ID} ${PARAM_PREFIX}define=POCO_BASE=${POCO_BASE} ${PARSED_ARGS_GENERATE_REMOTING}
                        COMMENT "Generate proxy-stubs for ${PARSED_ARGS_NAME}"
                        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}

@@ -1,0 +1,39 @@
+version: 2
+cmake_version: "3.16.4"
+cmake_generator: Ninja
+
+jobs:
+  - toolchain: x86_64-pc-linux-gnu_gcc7.3.0_glibc2.11
+    toolchain_revision: "219"
+    cmake_build_type: Release
+    cmake_params:
+      - -DUSE_DELIVERY=ON
+    targets:
+      - all
+    artifacts_to_publish:
+      - bin
+      - lib
+  - toolchain: visual_studio_15_win64
+    toolchain_revision: "462"
+    cmake_build_type: Release
+    cmake_params:
+      - -DKL_CM_TOOLCHAIN_ID=visual_studio_15_win64
+      - -DUSE_DELIVERY=ON
+    shell_env_command: ["%MSVC_DIR%/VC/Auxiliary/Build/vcvarsall.bat", "amd64"]
+    targets:
+      - all
+    artifacts_to_publish:
+      - bin
+      - lib
+  - toolchain: visual_studio_15
+    toolchain_revision: "462"
+    cmake_build_type: Release
+    cmake_params:
+      - -DKL_CM_TOOLCHAIN_ID=visual_studio_15
+      - -DUSE_DELIVERY=ON
+    shell_env_command: ["%MSVC_DIR%/VC/Auxiliary/Build/vcvarsall.bat", "amd64_x86"]
+    targets:
+      - all
+    artifacts_to_publish:
+      - bin
+      - lib

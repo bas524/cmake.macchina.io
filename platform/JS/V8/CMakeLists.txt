@@ -185,26 +185,31 @@ if (CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
 endif()
 
 if (MSVC)
-  add_custom_target(v8 ALL
+  add_custom_target(v8_build ALL
                     COMMAND ${GYP_GENERATOR}.exe -j${N} -C ${CMAKE_CURRENT_LIST_DIR}/out/${GYP_BUILD_TYPE} v8 v8_libplatform
                     WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
                     DEPENDS v8_config
                     COMMENT "build V8"
                     )
-  add_custom_command(TARGET v8
-                     POST_BUILD
+  set(V8_OUTPUT
+          ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/v8.dll
+          ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/v8_libbase.dll
+          ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/v8_libplatform.dll
+          ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/v8.dll.lib
+          ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/v8_libbase.dll.lib
+          ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/v8_libplatform.dll.lib)
+
+  add_custom_target(v8 DEPENDS ${V8_OUTPUT})
+
+  add_custom_command(OUTPUT ${V8_OUTPUT}
                      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/${GYP_BUILD_TYPE}/${v8targetlibdir}v8.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/v8.dll
-                     POST_BUILD
                      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/${GYP_BUILD_TYPE}/${v8targetlibdir}v8_libbase.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/v8_libbase.dll
-                     POST_BUILD
                      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/${GYP_BUILD_TYPE}/${v8targetlibdir}v8_libplatform.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/v8_libplatform.dll
-                     POST_BUILD
                      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/${GYP_BUILD_TYPE}/${v8targetlibdir}v8.dll.lib ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/v8.dll.lib
-                     POST_BUILD
                      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/${GYP_BUILD_TYPE}/${v8targetlibdir}v8_libbase.dll.lib ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/v8_libbase.dll.lib
-                     POST_BUILD
                      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/${GYP_BUILD_TYPE}/${v8targetlibdir}v8_libplatform.dll.lib ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/v8_libplatform.dll.lib
                      COMMENT "Copy V8 libraries to ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}"
+                     DEPENDS v8_build
                      )
   set(LIB_V8_LOCATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/v8.dll.lib)
   set(LIB_V8BASE_LOCATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/v8_libbase.dll.lib)
@@ -228,21 +233,28 @@ else ()
       list(APPEND EXT_CXX_FLAGS -Wno-unused-function)
   endif()
   
-  add_custom_target(v8 ALL
+  add_custom_target(v8_build ALL
                     COMMAND ${GYP_GENERATOR} -j${N} -C ${CMAKE_CURRENT_LIST_DIR}/out BUILDTYPE=${GYP_BUILD_TYPE} CFLAGS="${EXT_C_FLAGS}" CXXFLAGS="${EXT_CXX_FLAGS}" v8 v8_libplatform
                     WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
                     DEPENDS v8_config
                     COMMENT "build V8"
                     )
-  add_custom_command(TARGET v8
-                     POST_BUILD
+
+  set(V8_OUTPUT
+          ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libv8${CMAKE_SHARED_LIBRARY_SUFFIX}
+          ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libv8_libbase${CMAKE_SHARED_LIBRARY_SUFFIX}
+          ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libv8_libplatform${CMAKE_SHARED_LIBRARY_SUFFIX})
+
+  add_custom_target(v8 DEPENDS ${V8_OUTPUT})
+
+  add_custom_command(OUTPUT ${V8_OUTPUT}
                      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/${GYP_BUILD_TYPE}/${v8targetlibdir}libv8${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-                     POST_BUILD
                      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/${GYP_BUILD_TYPE}/${v8targetlibdir}libv8_libbase${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-                     POST_BUILD
                      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/out/${GYP_BUILD_TYPE}/${v8targetlibdir}libv8_libplatform${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
                      COMMENT "Copy V8 libraries to ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}"
+                     DEPENDS v8_build
                      )
+
   set(LIB_V8_LOCATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libv8${CMAKE_SHARED_LIBRARY_SUFFIX})
   set(LIB_V8BASE_LOCATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libv8_libbase${CMAKE_SHARED_LIBRARY_SUFFIX})
   set(LIB_V8PLATFORM_LOCATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libv8_libplatform${CMAKE_SHARED_LIBRARY_SUFFIX})
