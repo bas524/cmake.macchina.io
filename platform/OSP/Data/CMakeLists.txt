@@ -21,3 +21,10 @@ POCO_MAKE_BUNDLE(NAME poco.data
 if(EXISTS ${CMAKE_CURRENT_LIST_DIR}/SQLite)
   add_subdirectory(SQLite)
 endif()
+
+if(POSTGRESQL_FOUND AND ENABLE_DATA_POSTGRESQL)
+  message(STATUS "PostgreSQL Bundle Support Enabled")
+  add_subdirectory(PostgreSQL)
+else()
+  message(STATUS "PostgreSQL Bundle Support Disabled")
+endif()
