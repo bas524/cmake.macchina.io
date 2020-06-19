@@ -13,6 +13,16 @@ jobs:
     artifacts_to_publish:
       - bin
       - lib
+- toolchain: i686-pc-linux-gnu_gcc7.3.0_glibc2.11
+    toolchain_revision: "219"
+    cmake_build_type: Release
+    cmake_params:
+      - -DUSE_DELIVERY=ON
+    targets:
+      - all
+    artifacts_to_publish:
+      - bin
+      - lib
   - toolchain: visual_studio_15_win64
     toolchain_revision: "462"
     cmake_build_type: Release
