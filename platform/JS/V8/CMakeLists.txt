@@ -170,7 +170,10 @@ if(NOT PYTHON_DIR)
 endif()
 
 add_custom_target(v8_config
-                  COMMAND ${CMAKE_COMMAND} -E env "PATH=${PYTHON_DIR}${PATH_SEP}$ENV{PATH}" "${Python_EXECUTABLE}" ${CMAKE_CURRENT_LIST_DIR}/tools/gyp/gyp_main.py ${GYPFLAGS} --generator-output="${POCO_BASE}/JS/V8/out" -Goutput_dir="${POCO_BASE}/JS/V8/out" -f ${GYP_GENERATOR} -I"${CMAKE_CURRENT_LIST_DIR}/common.gypi" --depth=. "${CMAKE_CURRENT_LIST_DIR}/v8/src/v8.gyp"
+                  COMMAND ${CMAKE_COMMAND} -E env "CC=${CMAKE_C_COMPILER}" "CXX=${CMAKE_CXX_COMPILER}" "AR=${CMAKE_AR}"
+                      "${Python_EXECUTABLE}" ${CMAKE_CURRENT_LIST_DIR}/tools/gyp/gyp_main.py ${GYPFLAGS}
+                      --generator-output="${POCO_BASE}/JS/V8/out" -Goutput_dir="${POCO_BASE}/JS/V8/out" -f ${GYP_GENERATOR}
+                      -I"${CMAKE_CURRENT_LIST_DIR}/common.gypi" --depth=. "${CMAKE_CURRENT_LIST_DIR}/v8/src/v8.gyp"
                   WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
                   DEPENDS ${CMAKE_CURRENT_LIST_DIR}/include/v8.h
                   COMMENT "configure V8 with gyp"
