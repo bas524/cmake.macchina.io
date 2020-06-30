@@ -27,7 +27,6 @@ jobs:
     toolchain_revision: "462"
     cmake_build_type: Release
     cmake_params:
-      - -DKL_CM_TOOLCHAIN_ID=visual_studio_15_win64
       - -DUSE_DELIVERY=ON
     shell_env_command: ["%MSVC_DIR%/VC/Auxiliary/Build/vcvarsall.bat", "amd64"]
     targets:
@@ -39,7 +38,6 @@ jobs:
     toolchain_revision: "462"
     cmake_build_type: Release
     cmake_params:
-      - -DKL_CM_TOOLCHAIN_ID=visual_studio_15
       - -DUSE_DELIVERY=ON
     shell_env_command: ["%MSVC_DIR%/VC/Auxiliary/Build/vcvarsall.bat", "amd64_x86"]
     targets:
