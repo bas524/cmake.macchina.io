@@ -11,11 +11,11 @@ POCO_GENERATE_BUNDLESPEC(
         DEPENDENCIES com.appinf.osp.js:1.0.0-2.0.0 osp.web:1.0.0-2.0.0
         RUN_LEVEL 600
         FILES "bundle/*"
-        OUT_BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/Web.bndlspec
+        OUT_BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/Web.bndlspec
 )
 
 POCO_MAKE_BUNDLE(NAME com.appinf.osp.js.web
-                 BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/Web.bndlspec
+                 BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/Web.bndlspec
                  BUNDLES_DIR ${BUNDLES_OUTPUT_DIR}
                  SOURCES
                    src/JSServletExecutor.cpp

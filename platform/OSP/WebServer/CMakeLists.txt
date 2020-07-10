@@ -9,11 +9,11 @@ POCO_GENERATE_BUNDLESPEC(
         DEPENDENCIES osp.web:1.1.0-2.0.0
         RUN_LEVEL 000
         FILES bundle/*
-        OUT_BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/WebServer.bndlspec
+        OUT_BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/WebServer.bndlspec
 )
 
 POCO_MAKE_BUNDLE(NAME osp.web.server
-                 BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/WebServer.bndlspec
+                 BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/WebServer.bndlspec
                  BUNDLES_DIR ${BUNDLES_OUTPUT_DIR}
                  SOURCES src/WebServerBundleActivator.cpp
                  INCLUDES ${CMAKE_CURRENT_LIST_DIR}/include

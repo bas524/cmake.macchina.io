@@ -1,5 +1,5 @@
 set(PROJECT_BUNDLE io.macchina.webui.console)
-set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_LIST_DIR}/Console.bndlspec)
+set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_BINARY_DIR}/Console.bndlspec)
 
 POCO_GENERATE_BUNDLESPEC(
         DESCRIPTION "macchina.io Web Console"

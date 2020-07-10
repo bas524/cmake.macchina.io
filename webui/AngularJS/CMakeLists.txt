@@ -1,5 +1,5 @@
 set(PROJECT_BUNDLE io.macchina.webui.angularjs)
-set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_LIST_DIR}/AngularJS.bndlspec)
+set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_BINARY_DIR}/AngularJS.bndlspec)
 
 POCO_GENERATE_BUNDLESPEC(
         DESCRIPTION "AngularJS for macchina.io"

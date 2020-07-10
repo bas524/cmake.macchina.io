@@ -1,5 +1,5 @@
 set(PROJECT_BUNDLE io.macchina.services.unitsofmeasure)
-set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_LIST_DIR}/UnitsOfMeasure.bndlspec)
+set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_BINARY_DIR}/UnitsOfMeasure.bndlspec)
 
 # Sources
 set(SRCS
@@ -13,7 +13,7 @@ file(GLOB_RECURSE HDRS "include/*.h")
 
 POCO_MAKE_BUNDLE_LIBRARY(
         NAME IoTUnitsOfMeasure
-        GENERATE_REMOTING ${CMAKE_CURRENT_LIST_DIR}/RemoteGen.xml
+        GENERATE_REMOTING ${CMAKE_CURRENT_BINARY_DIR}/RemoteGen.xml
         SOURCES ${SRCS}
         HEADERS ${HDRS}
         INCLUDES ${CMAKE_CURRENT_LIST_DIR}/include

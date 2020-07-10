@@ -1,5 +1,5 @@
 set(PROJECT_BUNDLE io.macchina.can.devices)
-set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_LIST_DIR}/CAN.bndlspec)
+set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_BINARY_DIR}/CAN.bndlspec)
 
 # Sources
 set(SRCS
@@ -19,7 +19,7 @@ POCO_MAKE_BUNDLE_LIBRARY(
         NAME IoTCANDevices
         SOURCES ${SRCS}
         HEADERS ${HDRS}
-        INCLUDES ${CMAKE_CURRENT_LIST_DIR}/include
+        INCLUDES ${CMAKE_CURRENT_BINARY_DIR}/include
         VERSION 1
         DEPENDENCIES
           Poco::OSPIoTDevices

@@ -1,5 +1,5 @@
 set(PROJECT_BUNDLE io.macchina.webui.tinycolor)
-set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_LIST_DIR}/TinyColor.bndlspec)
+set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_BINARY_DIR}/TinyColor.bndlspec)
 
 POCO_GENERATE_BUNDLESPEC(
         DESCRIPTION "TinyColor for macchina.io"

@@ -1,5 +1,5 @@
 set(PROJECT_BUNDLE io.macchina.webui.bundleadmin)
-set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_LIST_DIR}/BundleAdmin.bndlspec)
+set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_BINARY_DIR}/BundleAdmin.bndlspec)
 
 POCO_GENERATE_BUNDLESPEC(
         DESCRIPTION "macchina.io Bundle Administration Utility"

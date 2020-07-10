@@ -1,5 +1,5 @@
 set(PROJECT_BUNDLE io.macchina.webui.ace)
-set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_LIST_DIR}/Ace.bndlspec)
+set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_BINARY_DIR}/Ace.bndlspec)
 
 POCO_GENERATE_BUNDLESPEC(
         DESCRIPTION "Ace for macchina.io"

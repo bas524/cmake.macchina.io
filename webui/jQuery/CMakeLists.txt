@@ -1,5 +1,5 @@
 set(PROJECT_BUNDLE io.macchina.webui.jquery)
-set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_LIST_DIR}/jQuery.bndlspec)
+set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_BINARY_DIR}/jQuery.bndlspec)
 
 POCO_GENERATE_BUNDLESPEC(
         DESCRIPTION "jQuery for macchina.io"

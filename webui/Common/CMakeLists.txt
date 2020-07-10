@@ -1,5 +1,5 @@
 set(PROJECT_BUNDLE io.macchina.webui.common)
-set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_LIST_DIR}/Common.bndlspec)
+set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_BINARY_DIR}/Common.bndlspec)
 
 POCO_GENERATE_BUNDLESPEC(
         DESCRIPTION "Common Web Resources for macchina.io"

@@ -1,5 +1,5 @@
 set(PROJECT_BUNDLE io.macchina.sensortag)
-set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_LIST_DIR}/SensorTag.bndlspec)
+set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_BINARY_DIR}/SensorTag.bndlspec)
 
 POCO_GENERATE_BUNDLESPEC(
         DESCRIPTION "macchina.io SensorTag Sensors"

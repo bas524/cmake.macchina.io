@@ -8,11 +8,11 @@ POCO_GENERATE_BUNDLESPEC(
         #LAZY_START
         RUN_LEVEL 000
         CODES PocoData
-        OUT_BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/Data.bndlspec
+        OUT_BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/Data.bndlspec
 )
 
 POCO_MAKE_BUNDLE(NAME poco.data
-                 BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/Data.bndlspec
+                 BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/Data.bndlspec
                  BUNDLES_DIR ${BUNDLES_OUTPUT_DIR}
                  SOURCES src/DataBundleActivator.cpp
                  INCLUDES ${CMAKE_CURRENT_LIST_DIR}/include

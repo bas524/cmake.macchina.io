@@ -1,5 +1,5 @@
 set(PROJECT_BUNDLE io.macchina.linux)
-set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_LIST_DIR}/Linux.bndlspec)
+set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_BINARY_DIR}/Linux.bndlspec)
 
 POCO_GENERATE_BUNDLESPEC(
         DESCRIPTION "macchina.io Linux Devices"

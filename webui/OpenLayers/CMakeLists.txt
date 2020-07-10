@@ -1,5 +1,5 @@
 set(PROJECT_BUNDLE io.macchina.webui.openlayers)
-set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_LIST_DIR}/OpenLayers.bndlspec)
+set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_BINARY_DIR}/OpenLayers.bndlspec)
 
 POCO_GENERATE_BUNDLESPEC(
         DESCRIPTION "OpenLayers for macchina.io"

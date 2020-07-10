@@ -11,11 +11,11 @@ POCO_GENERATE_BUNDLESPEC(
         RUN_LEVEL 600
         CODES PocoJSData
         FILES "bundle/*"
-        OUT_BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/Data.bndlspec
+        OUT_BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/Data.bndlspec
 )
 
 POCO_MAKE_BUNDLE(NAME com.appinf.osp.js.data
-                 BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/Data.bndlspec
+                 BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/Data.bndlspec
                  BUNDLES_DIR ${BUNDLES_OUTPUT_DIR}
                  SOURCES src/DataModule.cpp
                  INCLUDES ${CMAKE_CURRENT_LIST_DIR}/include

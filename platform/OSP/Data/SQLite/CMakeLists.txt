@@ -9,11 +9,11 @@ POCO_GENERATE_BUNDLESPEC(
         DEPENDENCIES poco.data:1.10.1-
         RUN_LEVEL 000
         CODES PocoDataSQLite
-        OUT_BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/SQLite.bndlspec
+        OUT_BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/SQLite.bndlspec
 )
 
 POCO_MAKE_BUNDLE(NAME poco.data.sqlite
-                 BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/SQLite.bndlspec
+                 BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/SQLite.bndlspec
                  BUNDLES_DIR ${BUNDLES_OUTPUT_DIR}
                  SOURCES src/SQLiteBundleActivator.cpp
                  INCLUDES ${CMAKE_CURRENT_LIST_DIR}/include

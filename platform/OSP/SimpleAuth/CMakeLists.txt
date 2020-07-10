@@ -7,11 +7,11 @@ POCO_GENERATE_BUNDLESPEC(
         ACTIVATOR SimpleAuthBundleActivator
         #LAZY_START
         RUN_LEVEL 000
-        OUT_BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/SimpleAuth.bndlspec
+        OUT_BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/SimpleAuth.bndlspec
 )
 
 POCO_MAKE_BUNDLE(NAME com.appinf.osp.simple-auth
-                 BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/SimpleAuth.bndlspec
+                 BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/SimpleAuth.bndlspec
                  BUNDLES_DIR ${BUNDLES_OUTPUT_DIR}
                  SOURCES src/SimpleAuth.cpp
                  INCLUDES ${CMAKE_CURRENT_LIST_DIR}/include

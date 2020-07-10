@@ -1,5 +1,5 @@
 set(PROJECT_BUNDLE io.macchina.webui.devices)
-set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_LIST_DIR}/Devices.bndlspec)
+set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_BINARY_DIR}/Devices.bndlspec)
 
 POCO_GENERATE_BUNDLESPEC(
         DESCRIPTION "macchina.io Sensors and Devices"

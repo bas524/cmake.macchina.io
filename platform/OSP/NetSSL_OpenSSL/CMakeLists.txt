@@ -9,11 +9,11 @@ POCO_GENERATE_BUNDLESPEC(
         DEPENDENCIES poco.net:1.10.1- poco.crypto:1.10.1-
         RUN_LEVEL 000
         CODES PocoNetSSL
-        OUT_BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/NetSSL_OpenSSL.bndlspec
+        OUT_BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/NetSSL_OpenSSL.bndlspec
 )
 
 POCO_MAKE_BUNDLE(NAME poco.net.ssl
-                 BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/NetSSL_OpenSSL.bndlspec
+                 BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/NetSSL_OpenSSL.bndlspec
                  BUNDLES_DIR ${BUNDLES_OUTPUT_DIR}
                  SOURCES src/NetSSLBundleActivator.cpp
                  INCLUDES ${CMAKE_CURRENT_LIST_DIR}/include

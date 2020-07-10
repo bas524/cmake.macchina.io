@@ -27,11 +27,11 @@ POCO_GENERATE_BUNDLESPEC(
         DEPENDENCIES poco.net:1.3.0-2.0.0 osp.web:1.2.0-2.0.0
         CODES PocoOSPWebEvent
         FILES "bundle/*"
-        OUT_BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/WebEventBundle.bndlspec
+        OUT_BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/WebEventBundle.bndlspec
         )
 
 POCO_MAKE_BUNDLE(NAME com.appinf.osp.webevent
-                 BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/WebEventBundle.bndlspec
+                 BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/WebEventBundle.bndlspec
                  BUNDLES_DIR ${BUNDLES_OUTPUT_DIR}
                  SOURCES
                    src/WebEventServiceImpl.cpp

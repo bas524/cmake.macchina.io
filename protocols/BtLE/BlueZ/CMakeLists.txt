@@ -1,5 +1,5 @@
 set(PROJECT_BUNDLE io.macchina.btle.bluez)
-set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_LIST_DIR}/BlueZ.bndlspec)
+set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_BINARY_DIR}/BlueZ.bndlspec)
 
 POCO_GENERATE_BUNDLESPEC(
         DESCRIPTION "macchina.io Bluetooth LE BlueZ Implementation"

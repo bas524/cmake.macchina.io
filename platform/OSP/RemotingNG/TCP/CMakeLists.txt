@@ -11,11 +11,11 @@ POCO_GENERATE_BUNDLESPEC(
         DEPENDENCIES poco.net:1.0.0-2.0.0
         RUN_LEVEL 000
         CODES PocoRemotingNGTCP
-        OUT_BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/TCP.bndlspec
+        OUT_BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/TCP.bndlspec
 )
 
 POCO_MAKE_BUNDLE(NAME com.appinf.osp.remotingng.tcp
-                 BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/TCP.bndlspec
+                 BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/TCP.bndlspec
                  BUNDLES_DIR ${BUNDLES_OUTPUT_DIR}
                  SOURCES src/BundleActivator.cpp
                  INCLUDES ${CMAKE_CURRENT_LIST_DIR}/include

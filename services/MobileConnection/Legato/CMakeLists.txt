@@ -1,5 +1,5 @@
 set(PROJECT_BUNDLE io.macchina.services.mobileconnection.legato)
-set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_LIST_DIR}/Legato.bndlspec)
+set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_BINARY_DIR}/Legato.bndlspec)
 
 POCO_GENERATE_BUNDLESPEC(
         DESCRIPTION "macchina.io Mobile Connection Service for Legato"

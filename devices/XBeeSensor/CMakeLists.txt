@@ -1,5 +1,5 @@
 set(PROJECT_BUNDLE io.macchina.xbee.sensor)
-set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_LIST_DIR}/XBeeSensor.bndlspec)
+set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_BINARY_DIR}/XBeeSensor.bndlspec)
 
 POCO_GENERATE_BUNDLESPEC(
         DESCRIPTION "macchina.io XBee Sensor"

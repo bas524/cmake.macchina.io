@@ -40,11 +40,11 @@ POCO_GENERATE_BUNDLESPEC(
         DEPENDENCIES poco.net:1.3.0-2.0.0
         CODES PocoOSPWeb
         FILES "bundle/*"
-        OUT_BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/WebBundle.bndlspec
+        OUT_BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/WebBundle.bndlspec
         )
 
 POCO_MAKE_BUNDLE(NAME osp.web
-                 BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/WebBundle.bndlspec
+                 BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/WebBundle.bndlspec
                  BUNDLES_DIR ${BUNDLES_OUTPUT_DIR}
                  SOURCES src/WebBundleActivator.cpp
                  INCLUDES ${CMAKE_CURRENT_LIST_DIR}/include

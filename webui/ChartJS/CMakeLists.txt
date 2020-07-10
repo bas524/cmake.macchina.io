@@ -1,5 +1,5 @@
 set(PROJECT_BUNDLE io.macchina.webui.chartjs)
-set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_LIST_DIR}/ChartJS.bndlspec)
+set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_BINARY_DIR}/ChartJS.bndlspec)
 
 POCO_GENERATE_BUNDLESPEC(
         DESCRIPTION "ChartJS for macchina.io"

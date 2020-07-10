@@ -1,5 +1,5 @@
 set(PROJECT_BUNDLE io.macchina.services.devicestatus)
-set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_LIST_DIR}/DeviceStatus.bndlspec)
+set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_BINARY_DIR}/DeviceStatus.bndlspec)
 
 # Sources
 set(SRCS
@@ -11,7 +11,7 @@ file(GLOB_RECURSE HDRS "include/*.h")
 
 POCO_MAKE_BUNDLE_LIBRARY(
         NAME IoTDeviceStatus
-        GENERATE_REMOTING ${CMAKE_CURRENT_LIST_DIR}/RemoteGen.xml
+        GENERATE_REMOTING ${CMAKE_CURRENT_BINARY_DIR}/RemoteGen.xml
         SOURCES ${SRCS}
         HEADERS ${HDRS}
         INCLUDES ${CMAKE_CURRENT_LIST_DIR}/include

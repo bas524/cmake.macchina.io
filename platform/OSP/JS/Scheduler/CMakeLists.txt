@@ -10,11 +10,11 @@ POCO_GENERATE_BUNDLESPEC(
         ACTIVATOR Poco::OSP::JS::Scheduler::BundleActivator
         DEPENDENCIES com.appinf.osp.js:1.0.0-2.0.0
         RUN_LEVEL 600
-        OUT_BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/Scheduler.bndlspec
+        OUT_BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/Scheduler.bndlspec
 )
 
 POCO_MAKE_BUNDLE(NAME com.appinf.osp.js.scheduler
-                 BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/Scheduler.bndlspec
+                 BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/Scheduler.bndlspec
                  BUNDLES_DIR ${BUNDLES_OUTPUT_DIR}
                  SOURCES src/BundleActivator.cpp src/SchedulerExtensionPoint.cpp
                  HEADERS src/SchedulerExtensionPoint.h

@@ -7,11 +7,11 @@ POCO_GENERATE_BUNDLESPEC(
         ACTIVATOR CoreBundleActivator
         #LAZY_START
         RUN_LEVEL 000
-        OUT_BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/Core.bndlspec
+        OUT_BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/Core.bndlspec
 )
 
 POCO_MAKE_BUNDLE(NAME osp.core
-                 BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/Core.bndlspec
+                 BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/Core.bndlspec
                  BUNDLES_DIR ${BUNDLES_OUTPUT_DIR}
                  SOURCES src/CoreBundleActivator.cpp
                  INCLUDES ${CMAKE_CURRENT_LIST_DIR}/include

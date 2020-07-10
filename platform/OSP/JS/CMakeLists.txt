@@ -42,11 +42,11 @@ POCO_GENERATE_BUNDLESPEC(
         #LAZY_START
         RUN_LEVEL 600
         CODES PocoJSCore PocoJSBridge PocoJSNet PocoJSData PocoOSPJS v8 v8_libbase v8_libplatform
-        OUT_BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/JS.bndlspec
+        OUT_BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/JS.bndlspec
 )
 
 POCO_MAKE_BUNDLE(NAME com.appinf.osp.js
-                 BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/JS.bndlspec
+                 BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/JS.bndlspec
                  BUNDLES_DIR ${BUNDLES_OUTPUT_DIR}
                  SOURCES src/JSBundleActivator.cpp
                  INCLUDES ${CMAKE_CURRENT_LIST_DIR}/include

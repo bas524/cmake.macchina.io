@@ -8,11 +8,11 @@ POCO_GENERATE_BUNDLESPEC(
         #LAZY_START
         RUN_LEVEL 000
         CODES PocoCrypto
-        OUT_BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/Crypto.bndlspec
+        OUT_BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/Crypto.bndlspec
 )
 
 POCO_MAKE_BUNDLE(NAME poco.crypto
-                 BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/Crypto.bndlspec
+                 BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/Crypto.bndlspec
                  BUNDLES_DIR ${BUNDLES_OUTPUT_DIR}
                  SOURCES src/CryptoBundleActivator.cpp
                  INCLUDES ${CMAKE_CURRENT_LIST_DIR}/include

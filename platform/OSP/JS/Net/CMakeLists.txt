@@ -11,11 +11,11 @@ POCO_GENERATE_BUNDLESPEC(
         RUN_LEVEL 600
         CODES PocoJSNet
         FILES "bundle/*"
-        OUT_BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/Net.bndlspec
+        OUT_BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/Net.bndlspec
 )
 
 POCO_MAKE_BUNDLE(NAME com.appinf.osp.js.net
-                 BUNDLESPEC ${CMAKE_CURRENT_LIST_DIR}/Net.bndlspec
+                 BUNDLESPEC ${CMAKE_CURRENT_BINARY_DIR}/Net.bndlspec
                  BUNDLES_DIR ${BUNDLES_OUTPUT_DIR}
                  SOURCES src/NetModule.cpp
                  INCLUDES ${CMAKE_CURRENT_LIST_DIR}/include
