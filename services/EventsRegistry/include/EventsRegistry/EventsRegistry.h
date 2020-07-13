@@ -1,5 +1,5 @@
-#ifndef EventsRegistry_EventsRegistryImport_INCLUDED
-#define EventsRegistry_EventsRegistryImport_INCLUDED
+#ifndef EventsRegistry_EventsRegistry_INCLUDED
+#define EventsRegistry_EventsRegistry_INCLUDED
 
 #include <Poco/Poco.h>
 

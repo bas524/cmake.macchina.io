@@ -2,6 +2,7 @@
 #define EventsRegistry_EventsRegistryService_INCLUDED
 
 #include "EventsRegistry.h"
+#include "Types.h"
 
 #include <string>
 #include <vector>
@@ -76,32 +77,16 @@ else
 
  */
 
-//@ serialize
-using EventId = Poco::Int64;
-
-/// @brief Authorized role identifier
-//@ serialize
-using RoleId = Poco::Int64;
-
-//@ serialize
-struct Event
-{
-    std::string name;
-    std::string product;  /// @remark name + product is unique
-    /// @todo possibly add product version
-    std::string description;
-    std::string category;
-};
-
 /// @brief Data layer of events registry
 //@ remote
+///@todo Consider to remove RoleId from interface
 class EventsRegistry_API EventsRegistryService
 {
 public:
     virtual ~EventsRegistryService() = default;
 
     /// @brief Insert event and return inserted event id
-    virtual EventId Insert(RoleId roleId, const Event& event) = 0;
+    virtual Event Insert(RoleId roleId, const Event& event) = 0;
 
     /// @brief Select event by roleId and id
     virtual Event Select(RoleId roleId, EventId id) = 0;

@@ -42,6 +42,10 @@ if(EXISTS ${CMAKE_CURRENT_LIST_DIR}/TCP)
     add_subdirectory(TCP)
 endif()
 
+if(EXISTS ${CMAKE_CURRENT_LIST_DIR}/REST)
+    add_subdirectory(REST)
+endif()
+
 if(EXISTS ${CMAKE_CURRENT_LIST_DIR}/RemoteGen)
     add_subdirectory(RemoteGen)
 endif()

@@ -4,6 +4,8 @@ set(PROJECT_BUNDLE_SPEC ${CMAKE_CURRENT_BINARY_DIR}/EventsRegistry.bndlspec)
 # Sources
 set(SRCS
         src/EventsRegistryServiceImpl.cpp
+        src/EventsRegistryEndpointImpl.cpp
+        src/EventsRegistryCollectionEndpointImpl.cpp
         )
 
 # Headers
@@ -17,10 +19,13 @@ POCO_MAKE_BUNDLE_LIBRARY(
         INCLUDES ${CMAKE_CURRENT_LIST_DIR}/include
         VERSION 1
         # todo remove unused
-        DEPENDENCIES Poco::RemotingNG Poco::OSP Poco::Zip Poco::Util Poco::JSON Poco::XML Poco::Foundation Poco::DataSQLite
+        DEPENDENCIES Poco::RemotingNG Poco::RemotingNGREST Poco::OSP Poco::Zip Poco::Util Poco::JSON Poco::XML Poco::Foundation Poco::DataSQLite
         OUTPUT_NAME EventsRegistry
         WRAP_HEADERS
         ${CMAKE_CURRENT_LIST_DIR}/include/EventsRegistry/EventsRegistryService.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/EventsRegistry/Types.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/EventsRegistry/EventsRegistryEndpoint.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/EventsRegistry/EventsRegistryCollectionEndpoint.h
         WRAP_INCLUDE_PATHS
         ${CMAKE_CURRENT_LIST_DIR}/include
         REMGEN_NAMESPACE events_registry

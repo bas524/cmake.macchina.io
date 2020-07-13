@@ -15,7 +15,7 @@ class EventsRegistry_API EventsRegistryServiceImpl : public EventsRegistryServic
 {
 public:
     explicit EventsRegistryServiceImpl(Poco::OSP::BundleContext::Ptr context);
-    EventId Insert(RoleId roleId, const Event& event) override;
+    Event Insert(RoleId roleId, const Event& event) override;
     Event Select(RoleId roleId, EventId id) override;
     std::vector<Event> Search(
         RoleId roleId,

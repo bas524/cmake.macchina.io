@@ -15,14 +15,14 @@ EventsRegistryServiceImpl::EventsRegistryServiceImpl(Poco::OSP::BundleContext::P
     *m_session << "CREATE TABLE IF NOT EXISTS Event (id INTEGER PRIMARY KEY, roleId INTEGER, name TEXT, product TEXT, description TEXT, category TEXT)", now;
 }
 
-EventId EventsRegistryServiceImpl::Insert(RoleId roleId, const Event &event)
+Event EventsRegistryServiceImpl::Insert(RoleId roleId, const Event &event)
 {
     Poco::FastMutex::ScopedLock lock(m_mutex);
     *m_session << "INSERT INTO Event(roleId, name, product, description, category) VALUES(?, ?, ?, ?, ?)", use(roleId),
         useRef(event.name), useRef(event.product), useRef(event.description), useRef(event.category), now;
-    EventId result{};
+    Event result = event;
     /// @todo rework (on replace with postgresql)
-    *m_session << "SELECT last_insert_rowid()", into(result), now;
+    *m_session << "SELECT last_insert_rowid()", into(result.id), now;
     return result;
 }
 
@@ -30,7 +30,7 @@ Event EventsRegistryServiceImpl::Select(RoleId roleId, EventId id)
 {
     Poco::FastMutex::ScopedLock lock(m_mutex);
     std::vector<Event> events;
-    *m_session << "SELECT name, product, description, category  FROM Event WHERE roleId = ? AND id = ?", into(events),
+    *m_session << "SELECT id, name, product, description, category  FROM Event WHERE roleId = ? AND id = ?", into(events),
         use(roleId), use(id), now;
 
     if (events.size() == 0)
@@ -52,7 +52,7 @@ std::vector<Event> EventsRegistryServiceImpl::Search(
     Poco::FastMutex::ScopedLock lock(m_mutex);
     std::vector<Event> events;
     *m_session
-        << "SELECT name, product, description, category FROM Event WHERE roleId = ? AND name LIKE ? AND product LIKE ? AND category LIKE ?",
+        << "SELECT id, name, product, description, category FROM Event WHERE roleId = ? AND name LIKE ? AND product LIKE ? AND category LIKE ?",
         into(events), use(roleId), useRef(nameLike), useRef(productLike), useRef(categoryLike), now;
 
     return events;
