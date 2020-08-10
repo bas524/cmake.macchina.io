@@ -96,7 +96,7 @@
           'GCC_OPTIMIZATION_LEVEL': '0', # stop gyp from defaulting to -Os
         },
       },
-	  'Debug_x64': {
+      'Debug_x64': {
         'variables': {
           'v8_enable_handle_zapping': 1,
         },
@@ -182,7 +182,7 @@
           },
         },
       },
-	  'Release_x64': {
+      'Release_x64': {
         'variables': {
           'v8_enable_handle_zapping': 0,
         },
@@ -359,9 +359,9 @@
             'ldflags': [ '-m32' ],
           }],
           [ 'target_arch=="ppc64" and OS!="aix"', {
-	    'cflags': [ '-m64', '-mminimal-toc' ],
-	    'ldflags': [ '-m64' ],
-	   }],
+        'cflags': [ '-m64', '-mminimal-toc' ],
+        'ldflags': [ '-m64' ],
+       }],
           [ 'target_arch=="s390"', {
             'cflags': [ '-m31', '-march=z196' ],
             'ldflags': [ '-m31', '-march=z196' ],
