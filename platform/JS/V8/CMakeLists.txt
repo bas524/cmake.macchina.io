@@ -169,8 +169,14 @@ if(NOT PYTHON_DIR)
   get_filename_component(PYTHON_DIR "${Python_EXECUTABLE}" DIRECTORY)
 endif()
 
+if (WIN32)
+  set(EXTEND_PATH "${PYTHON_DIR};$ENV{PATH}")
+ else ()
+  set(EXTEND_PATH "$ENV{PATH}")
+endif ()
+
 add_custom_target(v8_config
-                  COMMAND ${CMAKE_COMMAND} -E env "CC=${CMAKE_C_COMPILER}" "CXX=${CMAKE_CXX_COMPILER}" "AR=${CMAKE_AR}"
+                  COMMAND ${CMAKE_COMMAND} -E env "CC=${CMAKE_C_COMPILER}" "CXX=${CMAKE_CXX_COMPILER}" "AR=${CMAKE_AR}" "PATH=${EXTEND_PATH}"
                       "${Python_EXECUTABLE}" ${CMAKE_CURRENT_LIST_DIR}/tools/gyp/gyp_main.py ${GYPFLAGS}
                       --generator-output="${POCO_BASE}/JS/V8/out" -Goutput_dir="${POCO_BASE}/JS/V8/out" -f ${GYP_GENERATOR}
                       -I"${CMAKE_CURRENT_LIST_DIR}/common.gypi" --depth=. "${CMAKE_CURRENT_LIST_DIR}/v8/src/v8.gyp"
