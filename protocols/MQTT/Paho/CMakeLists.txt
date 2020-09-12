@@ -1,8 +1,4 @@
-if (USE_DELIVERY)
-  find_package(OpenSSL_PDK REQUIRED)
-else()
-  find_package(OpenSSL REQUIRED)
-endif()
+find_package(OpenSSL REQUIRED)
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   add_definitions(-DOSX)
@@ -42,11 +38,7 @@ set(SRCS
 # Headers
 file(GLOB_RECURSE HDRS "include/*.h")
 
-if(USE_DELIVERY)
-  set (DEPENDENCIES openssl_pdk::ssl_static openssl_pdk::crypto_static)
-else()
-  set (DEPENDENCIES OpenSSL::SSL OpenSSL::Crypto)
-endif()
+set (DEPENDENCIES OpenSSL::SSL OpenSSL::Crypto)
 
 POCO_MAKE_BUNDLE_LIBRARY(
         NAME PahoMQTT

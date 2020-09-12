@@ -1,4 +1,3 @@
-add_subdirectory(EventsRegistry)
 add_subdirectory(DeviceStatus)
 add_subdirectory(NetworkEnvironment)
 if (NOT WIN32)
