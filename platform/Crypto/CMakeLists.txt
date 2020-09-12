@@ -23,11 +23,7 @@ set_target_properties(Crypto
     DEFINE_SYMBOL Crypto_EXPORTS
 )
 
-if (USE_DELIVERY)
-    target_link_libraries(Crypto PUBLIC Poco::Foundation openssl_pdk::ssl_static openssl_pdk::crypto_static)
-else()
-    target_link_libraries(Crypto PUBLIC Poco::Foundation OpenSSL::SSL OpenSSL::Crypto)
-endif()
+target_link_libraries(Crypto PUBLIC Poco::Foundation OpenSSL::SSL OpenSSL::Crypto)
 
 target_include_directories(Crypto
     PUBLIC

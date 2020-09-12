@@ -1,3 +1,6 @@
+This is a fork of [macchina.io](https://macchina.io) project.
+I did it for the sake of adding a cmake support.
+
 ![macchina.io][logo]
 
 *macchina.io Edge Device SDK is a powerful application software platform for IoT devices.*
@@ -18,18 +21,13 @@ For more information, including [documentation](https://macchina.io/docs), pleas
 [project wiki](https://github.com/macchina-io/macchina.io/wiki).
 
 
-Build Status
-------------
-
-- Travis: [![Travis Build Status](https://travis-ci.org/macchina-io/macchina.io.png?branch=develop)](https://travis-ci.org/macchina-io/macchina.io/)
-
-
 Prerequisites
 -------------
 
-  - GNU Make 3.81 or newer
+  - cmake 3.5.0 or newer
   - Linux: GNU C++ (g++) 5.0 or newer; alternatively Clang++ 3.4 or newer (C++14)
   - macOS: Clang++ (Apple LLVM) 10.0 or newer
+  - Windows: MSVC2017
   - OpenSSL headers and libraries (on macOS, via [Homebrew](http://brew.sh): `brew install openssl`)
   - Python 2.7 (for building V8)
 
@@ -37,24 +35,36 @@ Prerequisites
 Getting Started
 ---------------
 
-For the impatient, using a Linux or macOS machine:
+For the impatient, using a Linux or macOS or Windows machine:
 
-    $ git clone https://github.com/macchina-io/macchina.io.git
+    $ git clone https://github.com/bas524/macchina.io.git
     $ cd macchina.io
     $ git checkout master
-    $ make -s -j8 DEFAULT_TARGET=shared_release
+    $ mkdir cmake-build
+    $ cd cmake-build
+    $ cmake -DCMAKE_BUILD_TYPE=Release ..
+    $ cmake --build . --config Release
+    
+On MacOS system set openssl cmake variable
+
+    $ cmake -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl ..
 
 Then, on Linux:
 
-    $ export LD_LIBRARY_PATH=`pwd`/platform/lib/Linux/x86_64:`pwd`/server/bin/Linux/x86_64/codeCache
-    $ cd server
-    $ bin/Linux/x86_64/macchina
+    $ cd bin
+    $ export LD_LIBRARY_PATH=$PWD/../lib
+    $ ./macchina
 
 On macOS:
 
-    $ export DYLD_LIBRARY_PATH=`pwd`/platform/lib/Darwin/x86_64
-    $ cd server
-    $ bin/Darwin/x86_64/macchina
+    $ cd bin
+    $ export DYLD_LIBRARY_PATH=$PWD/../lib
+    $ ./macchina
+    
+On Windows:
+
+    $ cd bin
+    $ ./macchina
 
 Then direct your favorite web browser to <http://localhost:22080> and log in with username 'admin' and password 'admin'.
 
