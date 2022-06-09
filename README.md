@@ -1,5 +1,5 @@
 This is a fork of [macchina.io](https://macchina.io) project.
-I did it for the sake of adding a cmake support.
+I did it for the cmake build system support.
 
 ![macchina.io][logo]
 
